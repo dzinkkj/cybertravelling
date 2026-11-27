@@ -355,13 +355,15 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
   .foot{grid-template-columns:repeat(2,minmax(0,1fr))}
   /* celular: quadro 3D em cima, controles logo embaixo, os dois cabendo na tela */
   .viewer-wrap{grid-template-columns:minmax(0,1fr);gap:10px}
-  .viewer-wrap .viewer{min-height:0!important;height:calc(100svh - var(--hh) - 200px);max-height:560px}
+  .viewer-wrap .viewer{min-height:0!important;height:calc(100svh - var(--hh) - 250px);max-height:560px}
   .viewer-panel{position:static;order:2}
-  .engine-ui{display:grid;grid-template-columns:150px 1fr;grid-template-rows:auto auto;align-items:center;gap:8px 12px;padding:10px 12px}
+  /* conta-giros | pedal  em cima;  Explode | Sound  embaixo, na largura toda */
+  .engine-ui{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr);align-items:center;gap:8px 12px;padding:10px 12px}
   .engine-ui .panel-title{display:none}
-  .engine-ui .tacho{grid-row:1/3;max-width:150px}
+  .engine-ui .tacho{max-width:130px}
   .engine-ui .pedal{min-height:84px}
-  .engine-ui .row-btns button{min-height:44px}
+  .engine-ui .row-btns{grid-column:1/-1;grid-template-columns:1fr 1fr}
+  .engine-ui .row-btns button{min-height:44px;padding:0 10px;white-space:nowrap}
   .row.two{grid-template-columns:minmax(0,1fr)}
   .feat.cols3{columns:1}
   .story-head{grid-template-columns:minmax(0,1fr)}

@@ -311,7 +311,7 @@ class Viewer {
       // animação feita em código para um modelo específico (data-anim="motor-v6")
       if (this.el.dataset.anim === "motor-v6") {
         try {
-          const { setupMotorV6 } = await import("./motor-v6-anim.js?v=20261127g");
+          const { setupMotorV6 } = await import("./motor-v6-anim.js?v=20261127h");
           this.custom = setupMotorV6(gltf.scene, this);
           this.mountUI();
           if (this.custom) { console.info("motor-v6:", this.custom.info); window.__motorV6 = this.custom; window.__motorV6View = this; }

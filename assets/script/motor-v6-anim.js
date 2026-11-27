@@ -11,6 +11,7 @@
 //  são tiradas da própria geometria do modelo quando ele carrega.
 // =====================================================================
 import { createEngineSound } from "./motor-som.js";
+import { createBoom } from "./motor-boom.js?v=20261127c";
 import * as THREE from "three";
 import { AfterimagePass } from "three/addons/postprocessing/AfterimagePass.js";
 
@@ -389,6 +390,8 @@ export function setupMotorV6(scene, viewer) {
   viewer.controls?.addEventListener("start", () => (dragging = true));
   viewer.controls?.addEventListener("end", () => (dragging = false));
   const D = new THREE.Matrix4(), S = new THREE.Matrix4();
+  // "Explode (Real)": o motor explode de verdade e depois volta no tempo (motor-boom.js)
+  const boom = createBoom({ scene, root, rel, viewer, tex });
 
   // rastro de movimento: entra em rotação alta (só quando o visualizador tem pós-processamento)
   let trail = null, trailLevel = 0, vibFree = true, subMode = false;
@@ -461,10 +464,20 @@ export function setupMotorV6(scene, viewer) {
   }
 
   function update(dt) {
+    const realDt = Math.min(dt, 0.1); // a explosão anda no tempo real, mesmo em celular mais lento
     dt = Math.min(dt, 0.05);
     if (paused) return;
     time += dt;
     if (!basePos) { basePos = scene.position.clone(); camBase = viewer.camera?.position.clone(); tgtBase = viewer.controls?.target.clone(); }
+    if (boom.active) { // motor destruído: só a explosão anda; o giro cai a zero
+      throttle = false;
+      rpm = Math.max(0, rpm - 30000 * dt);
+      limiter = 0;
+      if (trail) trail.uniforms.damp.value = 0;
+      gauge?.(dt);
+      boom.update(realDt);
+      return;
+    }
 
     // giro: acelerador sobe, solto desce até a marcha lenta
     // pisou: embalo forte embaixo (4→8 mil em ~0,3 s), mais lento perto do limite (~1,3 s até 15 mil)
@@ -614,7 +627,7 @@ export function setupMotorV6(scene, viewer) {
     createEngineSound().then((s) => { sound = s; window.__motorSom = s; sound?.start(); }).catch((e) => console.warn("som:", e)).finally(() => (soundLoading = false));
   }
   // fora da tela: silêncio
-  setInterval(() => { if (!sound) return; if (viewer.running && soundOn) sound.resume(); else sound.suspend(); }, 300);
+  setInterval(() => { if (!sound) return; if (viewer.running && soundOn && !boom.active) sound.resume(); else sound.suspend(); }, 300);
 
   // painel de controles (fica fora do quadro 3D)
   function ui(panel) {
@@ -650,16 +663,29 @@ export function setupMotorV6(scene, viewer) {
         <svg viewBox="0 0 64 80" aria-hidden="true"><path class="arm" d="M32 4v20"/><rect class="pad" x="10" y="22" width="44" height="54" rx="9"/><path class="grip" d="M18 34h28M18 44h28M18 54h28M18 64h28"/></svg>
         <span>Throttle<small>hold</small></span>
       </button>
-      <div class="row-btns"><button type="button" data-a="toggle">Explode</button><button type="button" data-a="sound" aria-pressed="true" title="Engine sound">🔊 Sound</button></div>`;
+      <div class="row-btns"><button type="button" data-a="toggle">Explode</button><button type="button" data-a="sound" aria-pressed="true" title="Engine sound">🔊 Sound</button></div>
+      <button type="button" class="boom-btn" data-a="boom">💥 Explode (Real)</button>`;
     const btn = box.querySelector('[data-a="toggle"]');
+    const boomBtn = box.querySelector('[data-a="boom"]');
+    const lock = (v) => { boomBtn.disabled = v; btn.disabled = v; gas.disabled = v; };
+    boom.soundOn = () => soundOn;
+    boom.onDone = () => { rpm = RPM_IDLE; lock(false); sound?.setEnabled(soundOn); };
+    boomBtn.addEventListener("click", () => {
+      if (boom.active || !basePos || camT < 1) return;
+      press(false);
+      if (!boom.start(basePos)) return;
+      lock(true);
+      sound?.setEnabled(false);
+    });
     btn.addEventListener("click", () => {
+      if (boom.active) return;
       const open = kTarget < 0.5;
       setOpen(open);
       btn.textContent = open ? "Implode" : "Explode";
     });
     // acelerador: segurar com o dedo/mouse, ou espaço/Enter com o botão em foco, ou ↑ / W com o motor na tela
     const gas = box.querySelector(".pedal");
-    const press = (v) => { if (v) ensureSound(); throttle = v; gas.classList.toggle("on", v); };
+    const press = (v) => { if (v && boom.active) return; if (v) ensureSound(); throttle = v; gas.classList.toggle("on", v); };
     const sbtn = box.querySelector('[data-a="sound"]');
     sbtn.addEventListener("click", () => {
       soundOn = !soundOn;
@@ -699,7 +725,7 @@ export function setupMotorV6(scene, viewer) {
   const SUB_MAX = (document.documentElement.dataset.versao === "original" || new URLSearchParams(location.search).has("original")) ? 8 : 4;
   let subCap = SUB_MAX, emaDt = 1 / 60, coolT = 0;
   function subframes(dt) {
-    if (paused) return 1;
+    if (paused || boom.active) return 1;
     // não borra enquanto abre/fecha ou a câmera anda (as peças voando ficariam duplicadas)
     if (dragging || camT < 1 || Math.abs(kTarget - k) > 1e-3) return 1;
     emaDt += (dt - emaDt) * 0.05;

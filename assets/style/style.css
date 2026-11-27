@@ -355,7 +355,7 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
   .foot{grid-template-columns:repeat(2,minmax(0,1fr))}
   /* celular: quadro 3D em cima, controles logo embaixo, os dois cabendo na tela */
   .viewer-wrap{grid-template-columns:minmax(0,1fr);gap:10px}
-  .viewer-wrap .viewer{min-height:0!important;height:calc(100svh - var(--hh) - 250px);max-height:560px}
+  .viewer-wrap .viewer{min-height:0!important;height:calc(100svh - var(--hh) - 300px);max-height:560px}
   .viewer-panel{position:static;order:2}
   /* conta-giros | pedal  em cima;  Explode | Sound  embaixo, na largura toda */
   .engine-ui{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr);align-items:center;gap:8px 12px;padding:10px 12px}
@@ -364,6 +364,7 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
   .engine-ui .pedal{min-height:84px}
   .engine-ui .row-btns{grid-column:1/-1;grid-template-columns:1fr 1fr}
   .engine-ui .row-btns button{min-height:44px;padding:0 10px;white-space:nowrap}
+  .engine-ui .boom-btn{grid-column:1/-1}
   .row.two{grid-template-columns:minmax(0,1fr)}
   .feat.cols3{columns:1}
   .story-head{grid-template-columns:minmax(0,1fr)}
@@ -564,3 +565,24 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
   .hero:has(.media[data-orient="h"]){min-height:auto;padding-top:calc(56.25vw + 16px)}
   .intro video[data-orient="h"]{object-fit:contain}
 }
+
+/* ================= EXPLODE (REAL): o motor explode e volta no tempo ================= */
+.engine-ui .boom-btn{min-height:44px;border-color:#ff3049;color:#ff5466;background:#1d0a10}
+.engine-ui .boom-btn:hover,.engine-ui .boom-btn:focus-visible{border-color:#ff5466;box-shadow:inset 3px 0 0 #ff3049}
+.engine-ui button:disabled{opacity:.4;cursor:not-allowed}
+.boom-flash{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 55%,#fff 0,#ffe2a0 25%,rgba(255,110,30,.6) 50%,rgba(255,60,20,0) 80%)}
+.boom-flash.go{animation:boomflash 1s ease-out}
+@keyframes boomflash{0%{opacity:1}15%{opacity:.9}100%{opacity:0}}
+.boom-rewind{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:4;min-height:48px;padding:0 24px;
+  border:1.5px solid var(--cy);border-radius:3px;background:rgba(7,10,18,.85);color:var(--cy);cursor:pointer;
+  font:700 15px var(--mono);letter-spacing:.08em;text-transform:uppercase;animation:boompulse 1.2s ease-in-out infinite}
+.boom-rewind:hover,.boom-rewind:focus-visible{background:var(--cy);color:var(--bg);outline:none}
+@keyframes boompulse{50%{box-shadow:0 0 22px rgba(53,231,255,.55)}}
+.boom-label{position:absolute;right:12px;top:8px;z-index:4;pointer-events:none;font:700 14px var(--mono);color:#fff;
+  text-shadow:0 0 6px #000;animation:boomblink .5s steps(2) infinite}
+@keyframes boomblink{50%{opacity:0}}
+.viewer.rewinding canvas{filter:saturate(.35) contrast(1.2) hue-rotate(-15deg) brightness(1.05)}
+.viewer.rewinding::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 4px);animation:boomscan .25s linear infinite}
+@keyframes boomscan{to{background-position:0 4px}}

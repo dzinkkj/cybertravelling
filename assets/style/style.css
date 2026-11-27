@@ -364,7 +364,7 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
   .engine-ui .pedal{min-height:84px}
   .engine-ui .row-btns{grid-column:1/-1;grid-template-columns:1fr 1fr}
   .engine-ui .row-btns button{min-height:44px;padding:0 10px;white-space:nowrap}
-  .engine-ui .boom-btn{grid-column:1/-1}
+  .engine-ui .boom-btn{grid-column:1/-1;min-height:44px}
   .row.two{grid-template-columns:minmax(0,1fr)}
   .feat.cols3{columns:1}
   .story-head{grid-template-columns:minmax(0,1fr)}
@@ -567,8 +567,6 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
 }
 
 /* ================= EXPLODE (REAL): o motor explode e volta no tempo ================= */
-.engine-ui .boom-btn{min-height:44px;border-color:#ff3049;color:#ff5466;background:#1d0a10}
-.engine-ui .boom-btn:hover,.engine-ui .boom-btn:focus-visible{border-color:#ff5466;box-shadow:inset 3px 0 0 #ff3049}
 .engine-ui button:disabled{opacity:.4;cursor:not-allowed}
 .boom-flash{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;
   background:radial-gradient(circle at 50% 55%,#fff 0,#ffe2a0 25%,rgba(255,110,30,.6) 50%,rgba(255,60,20,0) 80%)}

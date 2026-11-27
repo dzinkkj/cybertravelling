@@ -11,7 +11,7 @@
 //  são tiradas da própria geometria do modelo quando ele carrega.
 // =====================================================================
 import { createEngineSound } from "./motor-som.js";
-import { createBoom } from "./motor-boom.js?v=20261127c";
+import { createBoom } from "./motor-boom.js?v=20261127d";
 import * as THREE from "three";
 import { AfterimagePass } from "three/addons/postprocessing/AfterimagePass.js";
 
@@ -664,7 +664,7 @@ export function setupMotorV6(scene, viewer) {
         <span>Throttle<small>hold</small></span>
       </button>
       <div class="row-btns"><button type="button" data-a="toggle">Explode</button><button type="button" data-a="sound" aria-pressed="true" title="Engine sound">🔊 Sound</button></div>
-      <button type="button" class="boom-btn" data-a="boom">💥 Explode (Real)</button>`;
+      <button type="button" class="boom-btn" data-a="boom">Explode (Real)</button>`;
     const btn = box.querySelector('[data-a="toggle"]');
     const boomBtn = box.querySelector('[data-a="boom"]');
     const lock = (v) => { boomBtn.disabled = v; btn.disabled = v; gas.disabled = v; };

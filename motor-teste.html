@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-versao="leve" data-media="assets/media/" data-models-original="assets/models/original/" data-hdri="assets/hdri/" data-hdri-original="assets/hdri/original/">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teste · motor V6</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@500;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap" />
+  <link rel="stylesheet" href="assets/style/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    :root{--hh:60px}
+    body{padding-top:0}
+    .test-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:14px max(5vw,16px);border-bottom:1px solid var(--line)}
+    .test-bar b{font-family:var(--disp);font-size:18px}
+    .test-bar a{color:var(--cy);font:13px var(--mono)}
+    #motor .viewer{min-height:min(78vh,680px)}
+  </style>
+</head>
+<body>
+  <div class="test-bar">
+    <b>Teste do motor V6 <span id="mode-name">· versão leve</span></b>
+  </div>
+
+  <!-- mesmo bloco que vai no site, na seção do GP da China -->
+  <article class="story feature" id="motor" data-folio="F1">
+    <header class="story-head">
+      <p class="kicker">XANGAI · CIRCUITO INTERNACIONAL</p>
+      <h2>Grande Prêmio da China</h2>
+      <p class="dateline">sex · sáb · dom</p>
+    </header>
+    <div class="row top">
+      <div class="viewer" data-model="assets/models/motor-v6.glb" data-anim="motor-v6" data-label="motor V6"
+           data-angle="55" data-zoom="true" data-bloom="true" data-rotate="0" data-exposure="0.7" data-fit="1.25"></div>
+    </div>
+  </article>
+
+  <p class="credits" style="padding:0 max(5vw,16px) 24px">Modelo 3D: “V6 car engine with engine [MoreThem]” por Blendoriano (Sketchfab), licença CC BY 4.0. Animação feita em código.</p>
+
+  <script>
+    if ((document.documentElement.dataset.versao === "original" || new URLSearchParams(location.search).has("original"))) document.getElementById("mode-name").textContent = "· versão original";
+  </script>
+  <script type="module" src="assets/script/viewer3d.js"></script>
+</body>
+</html>

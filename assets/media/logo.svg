@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="825" height="292" viewBox="0 0 825 292">
+<g transform="translate(26,26)"><g>
+  <path d="M 210.16 152.83 A 96 96 0 1 0 168 203.14" fill="none" stroke="#00E0FF" stroke-width="11" stroke-linecap="round"/>
+  <path d="M 168 203.14 A 96 96 0 0 0 210.16 152.83" fill="none" stroke="#00E0FF" stroke-width="11" stroke-linecap="round" stroke-dasharray="0.1 21"/>
+  <path d="M 100 129 L 80 149 L 54 149" fill="none" stroke="#00E0FF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 133 145 L 115 163 L 93 163" fill="none" stroke="#00E0FF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="46" cy="149" r="8.5" fill="#00E0FF"/>
+  <circle cx="85" cy="163" r="7" fill="#FF2E88"/>
+  <path d="M 36,0 L 14,-5 L 10,-5 L -14,-28 L -22,-28 L -4,-5 L -22,-5 L -30,-14 L -36,-14 L -32,-4 L -38,-2 L -38,2 L -32,4 L -36,14 L -30,14 L -22,5 L -4,5 L -22,28 L -14,28 L 10,5 L 14,5 Z" fill="#F2F5FA" transform="translate(135,100) rotate(-40) scale(1.2)"/>
+</g></g>
+<g transform="translate(312.00,83.54)"><g fill="#F2F5FA" transform="translate(0.00,51.80)">
+<path transform="translate(0.000,0) scale(0.074000,-0.074000)" d="M55 94V606L149 700H513V594H173V106H523V0H149Z"/>
+<path transform="translate(45.288,0) scale(0.074000,-0.074000)" d="M262 0V210H175L21 700H144L259 310H381L496 700H619L465 210H378V0Z"/>
+<path transform="translate(97.088,0) scale(0.074000,-0.074000)" d="M172 409H471V602H172ZM172 98H490V317H172ZM588 608V419L537 374L608 312V92L516 0H56V700H496Z"/>
+<path transform="translate(149.184,0) scale(0.074000,-0.074000)" d="M56 0V700H540V600H172V408H490V310H172V100H550V0Z"/>
+<path transform="translate(196.544,0) scale(0.074000,-0.074000)" d="M172 324H482V602H172ZM598 606V322L526 250L648 0H521L416 226H172V0H56V700H504Z"/>
+</g>
+<g fill="#00E0FF" transform="translate(0.00,121.21)">
+<path transform="translate(0.000,0) scale(0.074000,-0.074000)" d="M224 0V598H20V700H544V598H340V0Z"/>
+<path transform="translate(46.176,0) scale(0.074000,-0.074000)" d="M172 324H482V602H172ZM598 606V322L526 250L648 0H521L416 226H172V0H56V700H504Z"/>
+<path transform="translate(98.864,0) scale(0.074000,-0.074000)" d="M17 0 190 700H462L635 0H514L474 170H178L138 0ZM198 262H454L372 604H280Z"/>
+<path transform="translate(151.552,0) scale(0.074000,-0.074000)" d="M190 0 17 700H139L280 104H372L513 700H635L462 0Z"/>
+<path transform="translate(204.240,0) scale(0.074000,-0.074000)" d="M56 0V700H540V600H172V408H490V310H172V100H550V0Z"/>
+<path transform="translate(251.600,0) scale(0.074000,-0.074000)" d="M56 0V700H172V100H457V280H564V0Z"/>
+<path transform="translate(299.922,0) scale(0.074000,-0.074000)" d="M56 0V700H172V100H457V280H564V0Z"/>
+<path transform="translate(348.244,0) scale(0.074000,-0.074000)" d="M45 -4V93L157 98V602L45 607V704L215 696L385 704V607L273 602V98L385 93V-4L215 4Z"/>
+<path transform="translate(384.504,0) scale(0.074000,-0.074000)" d="M56 0V700H194L512 155V700H624V0H486L168 545V0Z"/>
+<path transform="translate(439.264,0) scale(0.074000,-0.074000)" d="M55 94V606L149 700H559V598H171V102H486V315H295V411H593V0H149Z"/>
+</g></g>
+</svg>

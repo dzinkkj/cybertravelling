@@ -1,0 +1,24 @@
+Coloque aqui os modelos 3D em formato .glb, com EXATAMENTE estes nomes
+(ou troque o data-model="..." no index.html):
+
+aviao.glb            -> Como chegar (voo)            [JA INCLUSO: Boeing 787, comprimido]
+muralha.glb          -> Pequim                       [JA INCLUSO: reduzido de 195 MB para 6 MB]
+trem-bala.glb        -> Xangai                       [JA INCLUSO: trem AVE, comprimido]
+(GP da China)        -> motor V6 feito em codigo: assets/script/engine.js (nao precisa de arquivo)
+montanhas.glb        -> Zhangjiajie
+canton-tower.glb     -> Guangzhou
+chip.glb             -> Shenzhen
+peak-tram.glb        -> Hong Kong
+ruinas-sao-paulo.glb -> Macau
+foguete.glb          -> Sanya
+
+-- so aparecem depois da compra do Premium --
+paddock.glb          -> Champions Club (garagem / pit lane)
+cartao.glb           -> Tech Credit
+taipei-101.glb       -> Taipe
+navio.glb            -> Cruzeiro
+globo.glb            -> Michio Ayumu (as duas rotas / Busan)
+tokyo-tower.glb      -> Cinco dias em Toquio
+
+Dica: tente deixar cada arquivo abaixo de ~5 MB. Se baixar em .gltf + .bin + texturas,
+mantenha todos juntos numa subpasta e aponte o data-model para o .gltf.

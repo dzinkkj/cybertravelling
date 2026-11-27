@@ -1,0 +1,11 @@
+Som do motor — mod "Red Bull RB16B" do Assetto Corsa (autor não identificado; baixado do YouTube).
+Uso apenas educativo, na apresentação.
+
+Versão leve:     assets/audio/*.wav            (mono, ~2,5 s por trecho, já incluída)
+Versão original: assets/audio/original/*.ogg   (os arquivos do mod, inteiros) -> só com ?original no endereço
+
+Trechos (o número é o giro em que foram gravados; o site mistura os dois mais próximos):
+  idle ........ marcha lenta (~3 800 rpm)
+  on_6800 ... on_13650 .... acelerando (pé embaixo)
+  off_8060, off_10580 ..... desacelerando (pé fora)
+  pop1 ... pop9 ........... estouros do escapamento

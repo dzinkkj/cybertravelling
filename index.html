@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en" data-versao="leve"
+  data-media="assets/media/"
+  data-models-original="assets/models/original/"
+  data-hdri="assets/hdri/"
+  data-hdri-original="assets/hdri/original/">
+<!-- data-media: folder (or another site's link) holding the videos and photos.
+     data-models-original: where the heavy original 3D models live (?original version). -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberTravelling · China Tech Tour</title>
+  <meta name="description" content="CyberTravelling — the China Tech Tour: 28 days, 8 stops, 3 territories, the Chinese Grand Prix and the world's largest electronics market." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@500;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap" />
+  <link rel="stylesheet" href="assets/style/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+
+<!-- ================= HEADER (fixed) ================= -->
+<header class="topbar" id="topbar">
+  <div class="bar1">
+    <a class="brand" href="#home" aria-label="CyberTravelling, home">
+      <img class="logo-img" data-src="logo.svg" alt="CyberTravelling" height="46"><span class="logo-txt">Cyber<b>Travelling</b></span>
+    </a>
+    <span class="mode-badge" id="mode-badge" hidden>original version</span>
+    <nav class="segnav" aria-label="Sections">
+      <a href="#about" data-seg="about">About</a>
+      <a href="#flight" data-seg="route" class="on">Route</a>
+      <a href="#packages" data-seg="packages">Packages</a>
+      <a href="#second-leg" data-seg="premium" class="seg-premium" hidden>Premium</a>
+      <a href="#careers" data-seg="careers">Careers</a>
+      <a href="#contact" data-seg="contact">Contact</a>
+    </nav>
+    <button class="cart-btn" data-open="cart-drawer" aria-label="Open cart">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2M10 20.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0Zm8 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0Z"/></svg>
+      <span class="cart-label">Cart</span>
+      <span class="badge" id="cart-count" hidden>0</span>
+    </button>
+  </div>
+  <nav class="route" id="route" aria-label="Site sections and trip stops">
+    <a href="#about" class="info">About us</a>
+    <a href="#flight">Flight</a>
+    <a href="#beijing" style="--accent:#C2E063">Beijing</a>
+    <a href="#shanghai" style="--accent:#6BA6F0">Shanghai</a>
+    <a href="#chinese-gp" style="--accent:#6BA6F0">Chinese GP</a>
+    <a href="#zhangjiajie" style="--accent:#75D1BE">Zhangjiajie</a>
+    <a href="#guangzhou" style="--accent:#A2D175">Guangzhou</a>
+    <a href="#shenzhen" style="--accent:#FF5F7A">Shenzhen</a>
+    <a href="#hong-kong" style="--accent:#54ABF1">Hong Kong</a>
+    <a href="#macau" style="--accent:#E0B36A">Macau</a>
+    <a href="#sanya" style="--accent:#3FE5CC">Sanya</a>
+    <a href="#what-to-bring" class="info">What to bring</a>
+    <a href="#promotions" class="shop">Deals</a>
+    <a href="#packages" class="shop">Packages</a>
+    <!-- only appear after the Premium "purchase" -->
+    <a href="#second-leg" class="e2 premium-only" hidden>2nd leg</a>
+    <a href="#champions-club" class="e2 premium-only" hidden>Paddock</a>
+    <a href="#tech-credit" class="e2 premium-only" hidden>Tech Credit</a>
+    <a href="#taipei" class="e2 premium-only" hidden>Taipei</a>
+    <a href="#cruise" class="e2 premium-only" hidden>Cruise</a>
+    <a href="#michio-ayumu" class="e2 premium-only" hidden>Japan</a>
+    <a href="#tokyo" class="e2 premium-only" hidden>Tokyo</a>
+    <a href="#flyer" class="e2 premium-only" hidden>Alliance</a>
+    <a href="#careers" class="info">Careers</a>
+    <a href="#contact" class="info">Contact</a>
+  </nav>
+  <span id="progress"></span>
+</header>
+
+<div id="overlay"></div>
+
+<!-- ================= CART ================= -->
+<aside id="cart-drawer" class="drawer cart" aria-label="Cart">
+  <h2>Your cart</h2>
+  <div id="cart-empty" class="cart-empty">
+    <p>Your cart is empty.</p>
+    <a class="pill solid" href="#packages">See packages</a>
+  </div>
+  <div id="cart-full" hidden>
+    <ul id="cart-items" class="cart-items"></ul>
+    <div class="cart-total"><span>Total</span><b id="cart-total">US$ —</b></div>
+    <p class="cart-usd" id="cart-usd"></p>
+    <p class="cart-note" id="cart-inst"></p>
+    <p class="cart-note">Demo checkout: no payment is made and no personal data is requested.</p>
+    <button class="pill solid wide" id="pay-btn">Pay</button>
+  </div>
+  <div id="cart-done" class="cart-empty" hidden>
+    <p><b>Order simulated.</b><br />Thank you for choosing CyberTravelling.</p>
+    <button class="pill ghost" id="cart-close">Close</button>
+  </div>
+</aside>
+
+<!-- ================= PREMIUM INTRO ================= -->
+<div id="premium-intro" class="intro" hidden>
+  <video id="premium-video" data-src="premium-intro.mp4" muted playsinline preload="auto"></video>
+  <div class="intro-ph">
+    <span class="intro-line"></span>
+    <p class="kicker">ACCESS GRANTED</p>
+    <h2>Welcome to Premium</h2>
+    <p class="intro-note">placeholder animation: replace with premium-intro.mp4</p>
+  </div>
+  <button class="pill ghost intro-skip" id="intro-skip">Skip</button>
+</div>
+
+<main>
+<!-- ================= HERO + DEADLINE / DEPARTURE ================= -->
+<section class="hero" id="home">
+  <figure class="media"><video data-src="capa.mp4" data-fallback="shanghai_city.jpg" autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true"></video></figure>
+  <div class="hero-copy">
+    <p class="kicker">CYBERTRAVELLING · CHINA TECH TOUR</p>
+    <h1>The China<br />Tech Tour</h1>
+    <div class="rule"></div>
+    <p class="sub">28 days · 8 stops · 3 territories · from <b class="gold">US$ 4,265</b> per person</p>
+    <p class="fx">All prices in US dollars · exchange rate of <b>Nov 26, 2026</b>: <b>US$ 1 = R$ 5.744</b> (Brazil commercial close)</p>
+    <div class="dates" id="deadline">
+      <div class="date-box">
+        <span class="lbl">DEPARTURE</span>
+        <b>Fri, March 5, 2027</b>
+        <span class="sm">São Paulo (GRU) · 8:59 PM</span>
+        <span class="count" data-count="2027-03-05T20:59:00-03:00">—</span>
+      </div>
+      <div class="date-box hot">
+        <span class="lbl">DEADLINE · EARLY BIRD −10%</span>
+        <b>Sat, December 19, 2026</b>
+        <span class="sm">book by this date to save 10%</span>
+        <span class="count" data-count="2026-12-19T23:59:00-03:00">—</span>
+      </div>
+    </div>
+    <div class="cta"><a class="pill solid" href="#packages">See packages</a><a class="pill ghost" href="#flight">Explore the route</a></div>
+  </div>
+</section>
+
+<!-- ================= WHO WE ARE ================= -->
+<section class="story about" id="about" style="--accent:#35E7FF" data-folio="01">
+  <header class="story-head">
+    <p class="kicker">WHO WE ARE</p>
+    <h2>CyberTravelling</h2>
+    <p class="dateline">travel agency · São Paulo, Brazil</p>
+  </header>
+  <div class="row two reveal">
+    <div class="col">
+      <p class="lead">We are a travel agency for people who want to see where the modern world is made. Our routes go through race circuits, chip markets, car showrooms and launch sites — and through the history, food and landscapes around them.</p>
+      <p>Our first product is the <b>China Tech Tour</b>: 28 days that tell one story in growing order — <b>ancient</b> China (the Great Wall, the Forbidden City), <b>industrial</b> China (the Grand Prix, the car museums, BYD), the China of <b>components</b> (Huaqiangbei, Zhongguancun), <b>natural</b> China (Zhangjiajie, Yalong Bay) and <b>space</b> China (Wenchang). It ends next to a rocket launch center.</p>
+      <p>Every price on this site was researched on real booking platforms. Everything is shown in US dollars, and what is <i>not</i> included is written just as clearly as what is.</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat"><b>28</b><span>days on the road</span></div>
+      <div class="stat"><b>8</b><span>stops in 3 territories</span></div>
+      <div class="stat"><b>24</b><span>hotel nights · 8 hotels</span></div>
+      <div class="stat"><b>12</b><span>paid attractions included</span></div>
+      <div class="stat"><b>20</b><span>meals included</span></div>
+      <div class="stat"><b>PT · 中文</b><span>guide speaks Portuguese &amp; Mandarin</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MISSION, VISION AND VALUES ================= -->
+<section class="story mvv" id="mission" style="--accent:#FF4D9A" data-folio="02">
+  <header class="story-head">
+    <p class="kicker">WHAT GUIDES US</p>
+    <h2>Mission, vision &amp; values</h2>
+    <p class="dateline">CyberTravelling</p>
+  </header>
+  <div class="mvv-grid reveal">
+    <article class="mv-card">
+      <p class="kicker">MISSION</p>
+      <h3>Make technology a place you can visit.</h3>
+      <p>We design guided routes through the places where the things we use every day are designed, built and launched — with researched prices, a bilingual guide and no surprises on the bill.</p>
+    </article>
+    <article class="mv-card">
+      <p class="kicker">VISION</p>
+      <h3>The agency Brazilian tech fans trust.</h3>
+      <p>To be the first choice for Brazilian students and technology lovers who want to see Asia up close — and, step by step, to open a tech route on every continent.</p>
+    </article>
+    <article class="mv-card values">
+      <p class="kicker">VALUES</p>
+      <ul>
+        <li><b>Honest pricing</b> — real prices, in two currencies, with what is not included written in plain sight.</li>
+        <li><b>Curiosity</b> — every stop has to teach something about how the world works.</li>
+        <li><b>Care</b> — insurance on the whole route, a guide every day and warnings <i>before</i> departure, not after.</li>
+        <li><b>Respect</b> — for local culture, local food and the people who receive us.</li>
+        <li><b>Good logistics</b> — less time in transit, more time where it matters.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- 00 · GETTING THERE -->
+<article class="story b" id="flight" data-folio="03">
+  <header class="story-head">
+    <p class="kicker">00 · GETTING THERE</p>
+    <h2>São Paulo → Beijing</h2>
+    <p class="dateline">KLM · KL 792 + KL 897 · ≈ 26 h</p>
+  </header>
+  <div class="row top reveal">
+    <div class="col">
+      <p class="lead">We leave Guarulhos on <b>Friday, March 5, at 8:59 PM</b> on KLM flight KL 792: 11 h 21 min to Amsterdam, a 3 h 35 min connection at Schiphol, then 11 h on KL 897 to Beijing, landing at <b>9:55 AM on Sunday</b>.</p>
+      <p>Saturday doesn't disappear — it happens inside the plane. Beijing is <b>11 hours ahead</b> of Brasília.</p>
+      <ul class="items">
+        <li><b>Open-jaw ticket</b><span>In through Beijing (PEK), out through Sanya (SYX). No crossing China back just to catch a plane — it saves four days.</span><em>US$ 958</em></li>
+      </ul>
+    </div>
+    <figure class="media"><video data-src="voo.mp4" data-fallback="map.png" muted loop playsinline preload="metadata"></video><figcaption>voo.mp4</figcaption></figure>
+  </div>
+  <div class="row bottom reveal">
+    <div class="col">
+      <h3>Documents &amp; visas</h3>
+      <p><b>Three borders, three stamps, no visa to apply for.</b></p>
+      <ul class="items compact">
+        <li><b>Mainland China</b><span>visa-free for Brazilians, up to 30 days</span></li>
+        <li><b>Hong Kong</b><span>visa-free up to 90 days · own border, new stamp</span></li>
+        <li><b>Macau</b><span>visa-free up to 90 days · own border, new stamp</span></li>
+      </ul>
+      <p class="notice"><b>Heads-up:</b> China's visa exemption for Brazilians is valid until December 31, 2026, and we depart in March 2027. We follow the renewal closely and keep the visa process ready as plan B.</p>
+      <p class="small">Everyone needs a biometric passport valid for 6+ months, travel insurance for the 28 days, the printed itinerary and a digital copy of everything in the cloud.</p>
+      <div class="cta"><a class="pill ghost" href="#what-to-bring">What to bring</a></div>
+    </div>
+    <div class="viewer" data-model="assets/models/aviao.glb" data-label="Boeing 787" data-hdri="sunflowers_puresky"></div>
+  </div>
+</article>
+
+<!-- 01 · BEIJING -->
+<article class="story a" id="beijing" style="--accent:#C2E063" data-folio="04">
+  <header class="story-head">
+    <p class="kicker">STOP 01 · NORTHERN CHINA · 北京</p>
+    <h2>Beijing</h2>
+    <p class="dateline">3 NIGHTS · MAR 7 – 10</p>
+  </header>
+  <div class="row top reveal">
+    <figure class="media"><video data-src="pequim.mp4" data-fallback="forbidden.jpg" muted loop playsinline preload="metadata"></video><figcaption>pequim.mp4</figcaption></figure>
+    <div class="col rule-l">
+      <p class="lead">The capital: the Great Wall at Mutianyu for a whole day, the Forbidden City, two free tech stops — and Peking duck.</p>
+      <ul class="items">
+        <li><b>Peace Hotel Beijing ★★★★</b><span>Wangfujing, the old center. Superior room (24 m²), indoor pool, gym, two restaurants and a bar. Breakfast not included (US$ 20.02 per day, optional). Booking 8.0.</span><em>US$ 40.39 <i>per person / night</i></em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row bottom reveal">
+    <figure class="photo"><img data-src="wall_wide.jpg" alt="The Great Wall at Mutianyu" loading="lazy"><figcaption>The Great Wall · Mutianyu</figcaption></figure>
+    <div class="col">
+      <h3>What we do</h3>
+      <ul class="items">
+        <li><b>Great Wall · Mutianyu</b><span>Mon, Mar 8 · full day. 70 km north of the city, restored watchtowers and far emptier than Badaling. Bus, cable car up, toboggan down if you want.</span><em>US$ 25.94</em></li>
+        <li><b>Forbidden City + Tiananmen Square</b><span>Tue, Mar 9 · morning. 180 hectares, almost a thousand buildings, home of 24 emperors. Timed tickets, booked 7 days ahead.</span><em>US$ 5.40</em></li>
+        <li><b>Beijing Automobile Museum + Zhongguancun</b><span>Tue afternoon · five floors of car history, and "China's Silicon Valley".</span><em>FREE</em></li>
+      </ul>
+      <h3>Where we eat</h3>
+      <p>Quanjude, the historic Peking duck house founded in 1864 — and Wangfujing Snack Street, cheap and loud, next to the hotel. <span class="tagline">2 of 3 daily meals included</span></p>
+      <div class="cta"><a class="pill solid" href="#packages">See packages</a></div>
+    </div>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="h_peace_room.jpg" alt="Peace Hotel · superior room" loading="lazy"><figcaption>Peace Hotel · superior room</figcaption></figure><figure class="shot"><img data-src="tiananmen.jpg" alt="Tiananmen Square" loading="lazy"><figcaption>Tiananmen Square</figcaption></figure><figure class="shot"><img data-src="beijing_auto.jpg" alt="Beijing Automobile Museum" loading="lazy"><figcaption>Beijing Automobile Museum</figcaption></figure><figure class="shot"><img data-src="zhongguancun.jpg" alt="Zhongguancun" loading="lazy"><figcaption>Zhongguancun</figcaption></figure><figure class="shot"><img data-src="quanjude.jpg" alt="Quanjude · Peking duck" loading="lazy"><figcaption>Quanjude · Peking duck</figcaption></figure><figure class="shot"><img data-src="wangfujing.jpg" alt="Wangfujing Snack Street" loading="lazy"><figcaption>Wangfujing Snack Street</figcaption></figure></div>
+</article>
+
+<!-- 02 · SHANGHAI -->
+<article class="story b" id="shanghai" style="--accent:#6BA6F0" data-folio="05">
+  <header class="story-head">
+    <p class="kicker">STOP 02 · YANGTZE DELTA · 上海</p>
+    <h2>Shanghai</h2>
+    <p class="dateline">6 NIGHTS · MAR 10 – 16</p>
+  </header>
+  <div class="row top reveal">
+    <div class="col">
+      <p class="lead">Bullet train from Beijing: 1,318 km in 4 h 30. Six nights — the longest stop of the route — because of the Grand Prix.</p>
+      <ul class="items">
+        <li><b>Conrad Shanghai ★★★★★</b><span>789 East Nanjing Road, People's Square. The most expensive bed of the trip, paid back by location: gym, spa and restaurants in the building, a few blocks from Nanjing Road and the river. Breakfast not included.</span><em>US$ 107 <i>per person / night</i></em></li>
+      </ul>
+    </div>
+    <figure class="media"><video data-src="xangai.mp4" data-fallback="nanjing_road.jpg" muted loop playsinline preload="metadata"></video><figcaption>xangai.mp4</figcaption></figure>
+  </div>
+  <div class="row bottom reveal">
+    <div class="col">
+      <h3>The other days</h3>
+      <ul class="items">
+        <li><b>Maglev</b><span>Mon, Mar 15 · 30 km in 8 minutes at 300 km/h — the fastest commercial train in the world.</span><em>US$ 6.62</em></li>
+        <li><b>The Bund &amp; Nanjing Road</b><span>The colonial waterfront, the skyline across the river, and the walk back to the hotel.</span><em>FREE</em></li>
+      </ul>
+      <h3>Where we eat</h3>
+      <p>Din Tai Fung for xiaolongbao — soup dumplings eaten straight from the bamboo basket — and Sheng Yong Xing, Michelin-listed roast duck: the celebration dinner after the race.</p>
+      <div class="cta"><a class="pill ghost" href="#chinese-gp">The Grand Prix</a><a class="pill solid" href="#packages">See packages</a></div>
+    </div>
+    <figure class="media banner"><video data-src="xangai-banner.mp4" data-fallback="shanghai_city.jpg" autoplay muted loop playsinline preload="metadata" disablepictureinpicture aria-hidden="true"></video><figcaption>Shanghai by night</figcaption></figure>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="h_conrad_room.jpg" alt="Conrad Shanghai · room" loading="lazy"><figcaption>Conrad Shanghai · room</figcaption></figure><figure class="shot"><img data-src="maglev.jpg" alt="Maglev · 300 km/h" loading="lazy"><figcaption>Maglev · 300 km/h</figcaption></figure><figure class="shot"><img data-src="dintaifung.jpg" alt="Din Tai Fung" loading="lazy"><figcaption>Din Tai Fung</figcaption></figure><figure class="shot"><img data-src="shengyongxing.jpg" alt="Sheng Yong Xing" loading="lazy"><figcaption>Sheng Yong Xing</figcaption></figure></div>
+</article>
+
+<!-- F1 · GRAND PRIX (feature) -->
+<article class="story feature" id="chinese-gp" style="--accent:#6BA6F0" data-folio="06">
+  <header class="story-head">
+    <p class="kicker">SHANGHAI INTERNATIONAL CIRCUIT · ANTING</p>
+    <h2>The Chinese Grand Prix</h2>
+    <p class="dateline">FRI 12 · SAT 13 · SUN 14 MAR</p>
+  </header>
+  <div class="row top reveal">
+    <div class="viewer" data-model="assets/models/motor-v6.glb" data-anim="motor-v6" data-label="V6 engine" data-angle="55" data-zoom="true" data-bloom="true" data-rotate="0" data-exposure="0.7" data-fit="1.25"></div>
+  </div>
+  <div class="row bottom reveal">
+    <div class="stat"><b>Thu</b><span>free day · the circuit opens Friday</span></div>
+    <div class="stat"><b>Fri</b><span>free practice</span></div>
+    <div class="stat"><b>Sat</b><span>final practice + qualifying</span></div>
+    <div class="stat"><b>Sun</b><span>the race</span></div>
+  </div>
+  <div class="row reveal two">
+    <figure class="media"><video data-src="f1.mp4" data-fallback="circuit_stand.jpg" muted loop playsinline preload="metadata"></video><figcaption>f1.mp4</figcaption></figure>
+    <div class="col rule-l">
+      <p class="lead">Race day starts at the museum, not at the gate. The circuit is in Anting, 35 km from the hotel — and the Shanghai Auto Museum is in the same district, on the same metro line 11.</p>
+      <ul class="items">
+        <li><b>3-day general admission</b><span>Casual package · included</span><em>US$ 63.89</em></li>
+        <li><b>Grandstand seat</b><span>Intermediate package · included</span><em>US$ 224</em></li>
+        <li><b>Shanghai Auto Museum</b><span>Anting, metro line 11 · no extra transport cost</span><em>US$ 8.01</em></li>
+      </ul>
+      <p class="small">Try the engine above: hold the throttle (or ↑ / W), hit the rev limiter at 15,000 rpm, explode it to see the pistons move.</p>
+      <div class="cta"><a class="pill solid" href="#packages">See packages</a></div>
+    </div>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="circuit_sat.jpg" alt="The circuit from above" loading="lazy"><figcaption>The circuit from above</figcaption></figure><figure class="shot"><img data-src="shanghai_auto_museum.jpg" alt="Shanghai Auto Museum" loading="lazy"><figcaption>Shanghai Auto Museum</figcaption></figure></div>
+</article>
+
+<!-- 03 · ZHANGJIAJIE -->
+<article class="story c" id="zhangjiajie" style="--accent:#75D1BE" data-folio="07">
+  <header class="story-head">
+    <p class="kicker">STOP 03 · HUNAN PROVINCE · 张家界</p>
+    <h2>Zhangjiajie</h2>
+    <p class="dateline">4 NIGHTS · MAR 16 – 20</p>
+  </header>
+  <div class="row top reveal">
+    <figure class="media"><video data-src="zhangjiajie.mp4" data-fallback="zjj_b.jpg" muted loop playsinline preload="metadata"></video><figcaption>zhangjiajie.mp4</figcaption></figure>
+  </div>
+  <div class="row bottom reveal">
+    <div class="col">
+      <p class="lead">The Avatar mountains. Bullet train from Shanghai (7 h 15), arriving at night.</p>
+      <ul class="items">
+        <li><b>Neodalle International ★★★★★</b><span>Wulingyuan, at the park gate. Airport transfer and breakfast included. Hunan cuisine: spicy, smoky, no fear of chili.</span><em>US$ 66.16 <i>per person / night</i></em></li>
+      </ul>
+    </div>
+    <figure class="photo"><img data-src="bailong.jpg" alt="Bailong Elevator on the cliff" loading="lazy"><figcaption>Bailong Elevator · 326 m</figcaption></figure>
+    <div class="col rule-l">
+      <h3>What we do</h3>
+      <ul class="items compact">
+        <li><b>Zhangjiajie Forest Park</b><span>Wed 17 · the sandstone pillars Avatar's art team used as reference</span><em>US$ 31.34</em></li>
+        <li><b>Bailong Elevator</b><span>326 m glass lift on a cliff · Guinness record</span><em>US$ 17.24</em></li>
+        <li><b>Tianmen Mountain</b><span>Thu 18 · 99 bends, 999 steps, Heaven's Gate</span><em>US$ 37.95</em></li>
+        <li><b>Glass bridge</b><span>Fri 19 · morning, then the only free afternoon of the trip</span><em>FREE</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="h_neodalle_room.jpg" alt="Neodalle · room" loading="lazy"><figcaption>Neodalle · room</figcaption></figure><figure class="shot"><img data-src="tianmen.jpg" alt="Tianmen · 99 bends" loading="lazy"><figcaption>Tianmen · 99 bends</figcaption></figure><figure class="shot"><img data-src="glass_bridge.jpg" alt="The glass bridge" loading="lazy"><figcaption>The glass bridge</figcaption></figure></div>
+</article>
+
+<!-- 04 · GUANGZHOU -->
+<article class="story a" id="guangzhou" style="--accent:#A2D175" data-folio="08">
+  <header class="story-head">
+    <p class="kicker">STOP 04 · PEARL RIVER DELTA · 广州</p>
+    <h2>Guangzhou</h2>
+    <p class="dateline">2 NIGHTS · MAR 20 – 22</p>
+  </header>
+  <div class="row top reveal">
+    <figure class="media"><video data-src="guangzhou.mp4" data-fallback="white_tiger.jpg" muted loop playsinline preload="metadata"></video><figcaption>guangzhou.mp4</figcaption></figure>
+    <div class="col rule-l">
+      <p class="lead">Canton. Bullet train from Zhangjiajie (5 h 05) to a hotel inside a safari resort.</p>
+      <ul class="items">
+        <li><b>Chimelong Hotel ★★★★★</b><span>Panyu, inside the resort. 55 m² safari rooms with animal views, breakfast, heated indoor pool, bowling. Trip.com 9.1.</span><em>US$ 52.75 <i>per person / night</i></em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row bottom reveal">
+    <figure class="photo"><img data-src="chimelong.jpg" alt="Chimelong Safari Park" loading="lazy"><figcaption>Chimelong Safari Park</figcaption></figure>
+    <div class="col">
+      <h3>Sun, Mar 21 · full day</h3>
+      <ul class="items">
+        <li><b>Chimelong Safari Park</b><span>One of the largest wildlife parks in the world, crossed by a small train. Staying inside means free shuttles and entry 30 minutes before the public.</span><em>US$ 39.87</em></li>
+      </ul>
+      <h3>Where we eat</h3>
+      <p>Yum cha in Liwan: small plates and tea, ordered from trolleys in the old tea houses. Canton invented it. Dinner at the White Tiger Restaurant, with the animals in view.</p>
+      <div class="cta"><a class="pill solid" href="#packages">See packages</a></div>
+    </div>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="h_chimelong_room.jpg" alt="Chimelong Hotel · safari room" loading="lazy"><figcaption>Chimelong Hotel · safari room</figcaption></figure><figure class="shot"><img data-src="yumcha.jpg" alt="Yum cha in Liwan" loading="lazy"><figcaption>Yum cha in Liwan</figcaption></figure></div>
+</article>
+
+<!-- 05 · SHENZHEN -->
+<article class="story b" id="shenzhen" style="--accent:#FF5F7A" data-folio="09">
+  <header class="story-head">
+    <p class="kicker">STOP 05 · PEARL RIVER DELTA · 深圳</p>
+    <h2>Shenzhen</h2>
+    <p class="dateline">2 NIGHTS · MAR 22 – 24</p>
+  </header>
+  <div class="row top reveal">
+    <div class="col">
+      <p class="lead">The hardware city, 30 minutes by train from Guangzhou. We go to the world's largest electronics market — twice, on purpose.</p>
+      <ul class="items">
+        <li><b>Holiday Inn Express Futian ★★★★</b><span>The simplest hotel of the route, on purpose: free breakfast (6:30–10 AM), Wi-Fi, gym, metro 1.1 km away, under 10 minutes from Huaqiangbei. Booking 8.9.</span><em>US$ 40.22 <i>per person / night</i></em></li>
+      </ul>
+    </div>
+    <figure class="media"><video data-src="shenzhen.mp4" data-fallback="huaqiangbei_a.jpg" muted loop playsinline preload="metadata"></video><figcaption>shenzhen.mp4</figcaption></figure>
+  </div>
+  <div class="row bottom reveal">
+    <div class="col">
+      <h3>What we do</h3>
+      <ul class="items">
+        <li><b>Huaqiangbei</b><span>Mon 22 + Tue 23 · not a building but several blocks of towers, each one a vertical mall of components: chips, screens, cameras, drones, phones sold part by part. One afternoon to get lost, one full day to shop. Lunch in the towers' food courts.</span><em>FREE</em></li>
+        <li><b>BYD electric car showrooms</b><span>Shenzhen is BYD's home city. Walk in, sit in the cars — and the metro outside runs without a driver.</span><em>FREE</em></li>
+      </ul>
+      <div class="cta"><a class="pill solid" href="#packages">See packages</a></div>
+    </div>
+    <div class="viewer" data-model="assets/models/arduino_uno.glb" data-label="circuit board" data-angle="25"></div>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="hotel_tower.jpg" alt="Holiday Inn Express Futian" loading="lazy"><figcaption>Holiday Inn Express Futian</figcaption></figure><figure class="shot"><img data-src="huaqiangbei_b.jpg" alt="Inside a Huaqiangbei tower" loading="lazy"><figcaption>Inside a Huaqiangbei tower</figcaption></figure><figure class="shot"><img data-src="foodcourt.jpg" alt="Lunch in the towers" loading="lazy"><figcaption>Lunch in the towers</figcaption></figure><figure class="shot"><img data-src="byd.jpg" alt="BYD showroom" loading="lazy"><figcaption>BYD showroom</figcaption></figure></div>
+</article>
+
+<!-- 06 · HONG KONG -->
+<article class="story c" id="hong-kong" style="--accent:#54ABF1" data-folio="10">
+  <header class="story-head">
+    <p class="kicker">STOP 06 · SPECIAL ADMINISTRATIVE REGION · 香港</p>
+    <h2>Hong Kong</h2>
+    <p class="dateline">2 NIGHTS · MAR 24 – 26</p>
+  </header>
+  <div class="row top reveal">
+    <figure class="media"><video data-src="hong-kong.mp4" data-fallback="symphony.jpg" muted loop playsinline preload="metadata"></video><figcaption>hong-kong.mp4</figcaption></figure>
+  </div>
+  <div class="row bottom reveal">
+    <div class="col">
+      <p class="lead">We cross the border on foot from Shenzhen: own border, own currency, a second passport stamp.</p>
+      <ul class="items">
+        <li><b>Holiday Inn Golden Mile ★★★★</b><span>50 Nathan Road, Tsim Sha Tsui — one minute from the metro. In Hong Kong and Macau the package pays all three daily meals, because food costs double here.</span><em>US$ 55.36 <i>per person / night</i></em></li>
+      </ul>
+    </div>
+    <figure class="photo"><img data-src="victoria_peak.jpg" alt="Victoria Peak, Hong Kong" loading="lazy"><figcaption>Victoria Peak</figcaption></figure>
+    <div class="col rule-l">
+      <h3>Thu, Mar 25</h3>
+      <ul class="items compact">
+        <li><b>Peak Tram + Sky Terrace 428</b><span>a funicular climbs 400 m to the city's highest public viewpoint</span><em>US$ 20.72</em></li>
+        <li><b>Symphony of Lights</b><span>every night at 8 PM · Guinness record light-and-sound show</span><em>FREE</em></li>
+        <li><b>Tim Ho Wan</b><span>Michelin-starred dim sum at lunch-counter prices</span><em>ALL MEALS PAID</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="hotel_pool.jpg" alt="Holiday Inn Golden Mile" loading="lazy"><figcaption>Holiday Inn Golden Mile</figcaption></figure><figure class="shot"><img data-src="peak_tram.jpg" alt="Peak Tram" loading="lazy"><figcaption>Peak Tram</figcaption></figure><figure class="shot"><img data-src="timhowan.jpg" alt="Tim Ho Wan" loading="lazy"><figcaption>Tim Ho Wan</figcaption></figure></div>
+</article>
+
+<!-- 07 · MACAU -->
+<article class="story a" id="macau" style="--accent:#E0B36A" data-folio="11">
+  <header class="story-head">
+    <p class="kicker">STOP 07 · SPECIAL ADMINISTRATIVE REGION · 澳門</p>
+    <h2>Macau</h2>
+    <p class="dateline">1 NIGHT · MAR 26 – 27</p>
+  </header>
+  <div class="row top reveal">
+    <figure class="media"><video data-src="macau.mp4" data-fallback="guia.jpg" muted loop playsinline preload="metadata"></video><figcaption>macau.mp4</figcaption></figure>
+    <div class="col rule-l">
+      <p class="lead">55 km over the sea by bus — the bridge is the ride. Macau is the city where street signs are in Portuguese: a Brazilian can read them.</p>
+      <ul class="items">
+        <li><b>Sofitel at Ponte 16 ★★★★★</b><span>On the riverfront, walking distance to the Ruins of St. Paul's. The cheapest five-star of the route. All three meals included.</span><em>US$ 33.08 <i>per person / night</i></em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row bottom reveal">
+    <figure class="photo"><img data-src="stpauls.jpg" alt="Ruins of St. Paul's, Macau" loading="lazy"><figcaption>Ruins of St. Paul's</figcaption></figure>
+    <div class="col">
+      <h3>What we do</h3>
+      <ul class="items">
+        <li><b>Macau Grand Prix Museum</b><span>simulators and real cars; Asia's oldest street race</span><em>US$ 8.88</em></li>
+        <li><b>Guia Circuit on foot</b><span>the track is the city's own streets</span><em>FREE</em></li>
+        <li><b>Lord Stow's Bakery</b><span>Coloane's Portuguese custard tarts — a must</span><em>INCLUDED</em></li>
+      </ul>
+      <div class="cta"><a class="pill solid" href="#packages">See packages</a></div>
+    </div>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="sofitel16.jpg" alt="Sofitel at Ponte 16" loading="lazy"><figcaption>Sofitel at Ponte 16</figcaption></figure><figure class="shot"><img data-src="museu_gp.jpg" alt="Grand Prix Museum" loading="lazy"><figcaption>Grand Prix Museum</figcaption></figure><figure class="shot"><img data-src="natas.jpg" alt="Lord Stow's custard tarts" loading="lazy"><figcaption>Lord Stow's custard tarts</figcaption></figure></div>
+</article>
+
+<!-- 08 · SANYA -->
+<article class="story b" id="sanya" style="--accent:#3FE5CC" data-folio="12">
+  <header class="story-head">
+    <p class="kicker">STOP 08 · HAINAN ISLAND · 三亚</p>
+    <h2>Sanya</h2>
+    <p class="dateline">4 NIGHTS · MAR 27 – 31</p>
+  </header>
+  <div class="row top reveal">
+    <div class="col">
+      <p class="lead">Flight from Macau to the southern tip of China. Three programs and one day with nothing on it — in whatever order you like.</p>
+      <ul class="items">
+        <li><b>Sanya Marriott Yalong Bay ★★★★★</b><span>452 rooms, all facing the bay. Five restaurants, spa, three pools, tennis and diving. Breakfast and transfer charged separately.</span><em>US$ 99.93 <i>per person / night</i></em></li>
+      </ul>
+    </div>
+    <figure class="media"><video data-src="sanya.mp4" data-fallback="sanya_resort.jpg" muted loop playsinline preload="metadata"></video><figcaption>sanya.mp4</figcaption></figure>
+  </div>
+  <div class="row bottom reveal">
+    <div class="col">
+      <h3>What we do</h3>
+      <ul class="items">
+        <li><b>Yalong Bay</b><span>7 km of beach and the glass skywalk in the forest park above it</span><em>FREE</em></li>
+        <li><b>Nanshan</b><span>the cultural zone on the coast</span><em>US$ 14.45</em></li>
+        <li><b>Wenchang Space Science Center</b><span>China launches rockets from Hainan — our tech route ends next to a launch center</span><em class="tbc">PRICE TBC</em></li>
+      </ul>
+      <p class="notice"><b>The honest notice:</b> meals in Sanya are on you — these are free days, eat where and when you want. For the whole trip, set aside about <b>US$ 49.62</b> per person for meals outside the package.</p>
+      <h3>Back home</h3>
+      <p>Wednesday, March 31: flight from Sanya with one connection. <b>Thursday, April 1: landing in Guarulhos.</b> Day 28.</p>
+      <div class="cta"><a class="pill solid" href="#packages">Choose my package</a></div>
+    </div>
+    <figure class="photo"><img data-src="wenchang.jpg" alt="Wenchang space launch center" loading="lazy"><figcaption>Wenchang launch center</figcaption></figure>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="hotel_resort.jpg" alt="Sanya Marriott Yalong Bay" loading="lazy"><figcaption>Sanya Marriott Yalong Bay</figcaption></figure><figure class="shot"><img data-src="sanya_skywalk.jpg" alt="Glass skywalk" loading="lazy"><figcaption>Glass skywalk</figcaption></figure><figure class="shot"><img data-src="nanshan.jpg" alt="Nanshan" loading="lazy"><figcaption>Nanshan</figcaption></figure></div>
+</article>
+
+<!-- ================= WHAT TO BRING ================= -->
+<section class="story bring" id="what-to-bring" style="--accent:#F0BE55" data-folio="13">
+  <header class="story-head">
+    <p class="kicker">BEFORE YOU PACK</p>
+    <h2>What to bring</h2>
+    <p class="dateline">March in China · 5 to 20 °C</p>
+  </header>
+  <div class="bring-grid reveal">
+    <div class="bring-col">
+      <h3>Essentials</h3>
+      <ul class="check">
+        <li>Passport</li><li>Travel insurance</li><li>Layered clothes (5 – 20 °C)</li><li>Comfortable shoes</li>
+      </ul>
+    </div>
+    <div class="bring-col">
+      <h3>Tech</h3>
+      <ul class="check">
+        <li>Universal adapter · types A / C / I</li><li>Power bank under 100 Wh</li><li>eSIM + VPN for China</li><li>Ear plugs for the Grand Prix</li><li>Camera + spare memory cards</li>
+      </ul>
+    </div>
+    <div class="bring-col">
+      <h3>Documents</h3>
+      <ul class="check">
+        <li>Biometric passport valid for 6+ months</li><li>Printed itinerary and hotels</li><li>Travel insurance policy</li><li>A copy of everything in the cloud</li>
+      </ul>
+    </div>
+    <div class="bring-col">
+      <h3>On your phone, before boarding</h3>
+      <ul class="check">
+        <li>Alipay</li><li>Amap</li><li>DiDi</li><li>Trip.com</li><li>Google Translate with Chinese downloaded</li><li>Your VPN</li>
+      </ul>
+    </div>
+  </div>
+  <p class="notice reveal"><b>Why a VPN?</b> Google, WhatsApp and Instagram are blocked in mainland China. We tell you before you board — not after you land.</p>
+  <div class="folder-row reveal">
+    <figure class="shot folder-shot public-only"><img data-src="folder_bring.jpg" alt="The What to bring panel of our printed folder" loading="lazy"><figcaption>Our printed folder · What to bring</figcaption></figure>
+    <figure class="shot folder-shot premium-only" hidden><img data-src="folder_bring_full.jpg" alt="The What to bring panel of our printed folder, complete" loading="lazy"><figcaption>Our printed folder · What to bring, complete</figcaption></figure>
+    <figure class="shot folder-shot wide premium-only" hidden><img data-src="folder_in.jpg" alt="The inside of our printed folder: where you stay, packages and the Qualcomm project" loading="lazy"><figcaption>Our printed folder · inside, unlocked with Premium</figcaption></figure>
+    <div class="col folder-copy">
+      <p class="kicker">THE PRINTED FOLDER</p>
+      <h3>Every client takes it home</h3>
+      <p>The same checklist, printed on our three-panel folder. It travels in your bag — tick each box as you pack.</p>
+      <p class="premium-only" hidden>Inside the folder: where you stay, the three packages and the Qualcomm project — everything your Premium package includes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROMOTIONS ================= -->
+<section class="story promos" id="promotions" style="--accent:#F0BE55" data-folio="14">
+  <header class="story-head">
+    <p class="kicker">DEALS</p>
+    <h2>Promotions</h2>
+    <p class="dateline" id="promo-status">early bird active</p>
+  </header>
+  <div class="promo-grid reveal">
+    <article class="promo hot">
+      <p class="kicker">EARLY BIRD</p>
+      <b class="big">−10%</b>
+      <p>On every package, until <b>December 19, 2026</b>. Applied automatically in the cart.</p>
+      <span class="count" data-count="2026-12-19T23:59:00-03:00">—</span>
+    </article>
+    <article class="promo">
+      <p class="kicker">INSTALLMENTS</p>
+      <b class="big">36×</b>
+      <p>Pay in up to 36 monthly installments — and <b>no installment in January</b>, the month of school supplies and taxes.</p>
+    </article>
+    <article class="promo">
+      <p class="kicker">TRAVEL AS THREE</p>
+      <b class="big">3 / room</b>
+      <p>Every hotel price is already calculated for a <b>triple room</b>: bring two friends and the nightly rate per person is the one you see on this site.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= STORE: PACKAGES ================= -->
+<section class="story shop" id="packages" data-folio="15">
+  <header class="story-head">
+    <p class="kicker">THE OFFER</p>
+    <h2>Choose your package</h2>
+    <p class="dateline">per person · in US dollars</p>
+    <p class="fx head-fx">All prices in US dollars · exchange rate of <b>Nov 26, 2026</b>: <b>US$ 1 = R$ 5.744</b> (Brazil commercial close)</p>
+  </header>
+  <div class="plans reveal">
+    <article class="plan">
+      <div class="plan-img"><figure class="media"><video data-src="plano-casual.mp4" data-fallback="wall_wide.jpg" muted loop playsinline preload="metadata"></video></figure></div>
+      <p class="kicker">CASUAL</p>
+      <h3>Casual</h3>
+      <div class="price-box" data-price="4265"></div>
+      <ul class="feat">
+        <li>All 28 days, Beijing to Sanya</li>
+        <li>Domestic flights between cities</li>
+        <li>GP general admission, 3 days</li>
+        <li>Basic dining · 2 of 3 meals on the mainland</li>
+        <li>Attractions, guide and insurance</li>
+      </ul>
+      <button class="pill solid wide add" data-plan="casual" data-name="Casual package" data-price="4265">Add to cart</button>
+    </article>
+    <article class="plan">
+      <div class="plan-img"><figure class="media"><video data-src="plano-intermediario.mp4" data-fallback="maglev.jpg" muted loop playsinline preload="metadata"></video></figure></div>
+      <p class="kicker">INTERMEDIATE</p>
+      <h3>Intermediate</h3>
+      <div class="price-box" data-price="4439"></div>
+      <ul class="feat">
+        <li>Everything in Casual</li>
+        <li><b>Bullet train</b> instead of domestic flights</li>
+        <li><b>Grandstand seat</b> at the Grand Prix</li>
+        <li class="surprise">an extra leg of the trip</li>
+      </ul>
+      <button class="pill solid wide add" data-plan="intermediate" data-name="Intermediate package" data-price="4439">Add to cart</button>
+    </article>
+    <article class="plan premium">
+      <div class="plan-img mystery" aria-label="Surprise content">
+        <span class="q">?</span>
+        <span class="lock">revealed after purchase</span>
+      </div>
+      <p class="kicker">PREMIUM</p>
+      <h3>Premium</h3>
+      <div class="price-box" data-price="4718"></div>
+      <ul class="feat">
+        <li>Everything in Intermediate</li>
+        <li><b>Superior dining</b></li>
+        <li class="surprise">a surprise</li>
+      </ul>
+      <button class="pill solid wide add" data-plan="premium" data-name="Premium package" data-price="4718">Add to cart</button>
+    </article>
+  </div>
+  <div class="included reveal">
+    <h3>Included in every package</h3>
+    <ul class="feat cols3">
+      <li>Open-jaw international flight</li>
+      <li>24 nights in 8 hotels · triple room</li>
+      <li>Every leg between the 8 stops</li>
+      <li>12 paid attractions</li>
+      <li>Chinese Grand Prix ticket</li>
+      <li>20 meals</li>
+      <li>Portuguese &amp; Mandarin guide, 28 days</li>
+      <li>Insurance on the whole route</li>
+    </ul>
+    <h3 class="not-h">Not included</h3>
+    <ul class="feat cols3 not">
+      <li>≈ US$ 49.62 of meals outside the package</li>
+      <li>Breakfast where the hotel doesn't include it</li>
+      <li>Meals in Sanya (4 days)</li>
+      <li>Personal shopping — and in Huaqiangbei, that matters</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<!-- =====================================================================
+     PREMIUM ONLY — hidden until the Premium "payment".
+     Order follows slides 50 to 72.
+     ===================================================================== -->
+<div class="e2" id="premium" hidden>
+
+<section class="divider" id="second-leg">
+  <p class="kicker">PREMIUM EXCLUSIVE · JUNE 2027</p>
+  <h2>The trip doesn't end in Sanya</h2>
+  <div class="rule"></div>
+  <p>There is a second leg, starting in Taipei — and it has a sponsor.</p>
+</section>
+
+<article class="story b" id="champions-club" data-folio="P·01">
+  <header class="story-head">
+    <p class="kicker">BENEFIT 01 · THE BIGGEST LINE</p>
+    <h2>Champions Club at the Chinese GP</h2>
+    <p class="dateline">US$ 4,728 · paid by the sponsor</p>
+  </header>
+  <div class="row top">
+    <div class="col">
+      <p class="lead">The hospitality package that puts you inside the paddock, above the pit lane, for the whole race weekend.</p>
+      <p>A real Formula 1 product at its real price — almost two thirds of everything the sponsor puts in per client.</p>
+    </div>
+    <figure class="media"><video data-src="paddock.mp4" data-fallback="pitwalk.jpg" muted loop playsinline preload="metadata"></video><figcaption>paddock.mp4</figcaption></figure>
+  </div>
+  <div class="row bottom">
+    <div class="col"><h3>Premium, not grandstand</h3><p>Casual watches from general admission, Intermediate from the grandstand — Premium from the paddock, fully paid by Qualcomm.</p></div>
+    <figure class="photo"><img data-src="paddock_ent.jpg" alt="Paddock Club entrance" loading="lazy"><figcaption>Paddock Club entrance</figcaption></figure>
+  </div>
+</article>
+
+<article class="story a" id="taipei" data-folio="P·02">
+  <header class="story-head">
+    <p class="kicker">BENEFIT 02 · TAIWAN · THE PARTNERSHIP</p>
+    <h2>Taipei, Computex &amp; Tech Credit</h2>
+    <p class="dateline">4 NIGHTS · JUNE 2027</p>
+  </header>
+  <div class="row top">
+    <figure class="media"><video data-src="taipe.mp4" data-fallback="taipei_hotel.jpg" muted loop playsinline preload="metadata"></video><figcaption>taipe.mp4</figcaption></figure>
+    <div class="col rule-l">
+      <p class="lead">Four days at Computex with a professional badge — one of the biggest tech fairs in the world.</p>
+      <ul class="items">
+        <li><b>Courtyard by Marriott Taipei ★★★★</b><span>4 nights with meals · paid by Qualcomm</span><em>US$ 117 <i>per person / night</i></em></li>
+        <li><b>Flight to Taipei</b><span>Premium: one way · Intermediate: round trip</span><em>US$ 992</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row bottom">
+    <figure class="photo"><img data-src="taipei101.jpg" alt="Taipei 101" loading="lazy"><figcaption>Taipei 101</figcaption></figure>
+    <div class="col"><h3>Taipei 101 + documents</h3><p>The tower and the Taiwan visa — plus, for Premium, the Korean K-ETA for the stop in Busan. All paid by the sponsor.</p><ul class="items compact"><li><b>Taipei 101 + visa + K-ETA</b><span>Computex badge is free</span><em>US$ 68.25</em></li></ul></div>
+  </div>
+  <div class="row tech-credit" id="tech-credit">
+    <figure class="photo"><img data-src="computex_floor.jpg" alt="Computex show floor" loading="lazy"><figcaption>Computex</figcaption></figure>
+    <div class="col">
+      <p class="kicker">TECH CREDIT · BRAND ACTIVATION</p>
+      <h3>Spend it at Computex</h3>
+      <p>A Qualcomm credit for technology only — at Computex, in shops along the route and in the ship's onboard shops, on both legs of the trip.</p>
+      <div class="tc-stats">
+        <div class="stat"><b>US$ 1,000</b><span>Premium</span></div>
+        <div class="stat"><b>US$ 250</b><span>Intermediate</span></div>
+        <div class="stat"><b>Where</b><span>Computex, shops on the route, onboard shops</span></div>
+        <div class="stat"><b>Rules</b><span>tech products only · not cash · non-refundable</span></div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<article class="story c" id="cruise" style="--accent:#8FB8DC" data-folio="P·03">
+  <header class="story-head">
+    <p class="kicker">BENEFIT 03 · KEELUNG → TOKYO</p>
+    <h2>The crossing</h2>
+    <p class="dateline">7 NIGHTS · 5 PORTS · 3 COUNTRIES</p>
+  </header>
+  <div class="row top">
+    <figure class="media"><video data-src="cruzeiro.mp4" data-fallback="shinjuku.jpg" autoplay muted loop playsinline preload="metadata" disablepictureinpicture aria-hidden="true"></video><figcaption>Tokyo · the end of the crossing</figcaption></figure>
+  </div>
+  <div class="row bottom">
+    <div class="col"><p class="lead">MSC Bellissima: cabin, transport and food in one ticket, mandatory tips included.</p><ul class="items compact"><li><b>7-night crossing</b><span>paid by Qualcomm</span><em>US$ 1,089</em></li></ul></div>
+    <figure class="photo"><img data-src="bellissima.jpg" alt="MSC Bellissima" loading="lazy"><figcaption>MSC Bellissima</figcaption></figure>
+    <div class="col rule-l"><h3>The route</h3><ol class="ports"><li>Taipei · Keelung</li><li>Okinawa</li><li>Nagasaki</li><li>Busan · Korea</li><li>Kobe</li><li>Tokyo · disembark</li></ol></div>
+  </div>
+</article>
+
+<section class="story" id="compare" data-folio="P·04">
+  <header class="story-head">
+    <p class="kicker">LINE BY LINE</p>
+    <h2>What changes between packages</h2>
+    <p class="dateline">(Q) = paid by Qualcomm</p>
+  </header>
+  <div class="scroll">
+    <table class="cmp stack">
+      <thead><tr><th>Item</th><th>Casual</th><th>Intermediate</th><th class="hi">Premium</th></tr></thead>
+      <tbody>
+        <tr><td>Between cities</td><td>domestic flight</td><td>bullet train</td><td class="hi">bullet train</td></tr>
+        <tr><td>GP ticket</td><td>general admission</td><td>grandstand</td><td class="hi sp">Champions Club (Q)</td></tr>
+        <tr><td>Dining</td><td>basic · 2 of 3</td><td>basic · 2 of 3</td><td class="hi">superior</td></tr>
+        <tr><td>Computex, June</td><td>—</td><td class="sp">4 days, badge (Q)</td><td class="hi sp">4 days, badge (Q)</td></tr>
+        <tr><td>2nd-leg flight</td><td>—</td><td class="sp">round trip (Q)</td><td class="hi sp">one way (Q)</td></tr>
+        <tr><td>Cruise to Tokyo</td><td>—</td><td>—</td><td class="hi sp">7 nights (Q)</td></tr>
+        <tr><td>Tech Credit</td><td>—</td><td class="sp">US$ 250 (Q)</td><td class="hi sp">US$ 1,000 (Q)</td></tr>
+        <tr><td>Price per person</td><td>US$ 4,265</td><td>US$ 4,439</td><td class="hi">US$ 4,718</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small">From Casual to Intermediate: US$ 174 buys the bullet train, the grandstand and the second leg. From Intermediate to Premium: US$ 279 buys only the superior dining — the paddock and the cruise are paid by the sponsor.</p>
+</section>
+
+<section class="divider" id="question">
+  <p class="kicker">THE BOTTOM LINE</p>
+  <div class="bigsum"><div><b>US$ 4,718</b><span>the Premium client pays</span></div><div><b>US$ 7,454</b><span>the sponsor puts in, per client</span></div></div>
+  <h2>Who welcomes the group in Tokyo?</h2>
+  <div class="rule"></div>
+</section>
+
+<section class="curtain" id="curtain">
+  <figure class="media"><video data-src="cortina-alianca.mp4" muted playsinline preload="metadata"></video><figcaption>cortina-alianca.mp4 · plays once</figcaption></figure>
+</section>
+
+<article class="story a" id="michio-ayumu" style="--accent:#8FB8DC" data-folio="P·05">
+  <header class="story-head">
+    <p class="kicker">THE PARTNERSHIP · JAPAN</p>
+    <h2>Michio Ayumu</h2>
+    <p class="dateline">partner agency</p>
+  </header>
+  <div class="row top">
+    <figure class="michio-logo"><img data-src="michio_logo.png" alt="Michio Ayumu" loading="lazy"></figure>
+    <div class="col rule-l">
+      <p class="lead">A Japanese agency running its own Asia route in the same season as ours — they travel in February and March, we travel in March.</p>
+      <p>A cruise that boards in one country and lands in another leaves the ship on the wrong side of the map. The operator has to bring it back anyway — so it sells that return cheap. Two agencies filling both ends of the same crossing pay less than one agency filling one end.</p>
+    </div>
+  </div>
+  <div class="row bottom">
+    <div class="viewer" data-model="assets/models/earth.glb" data-label="two routes · Busan" data-anim="globo" data-angle="15" data-fit="1.45" data-spin="0.25" data-rotate="0" data-exposure="1.1" data-bloom="true"></div>
+    <div class="col"><h3>Busan: where the routes split</h3><p>Shanghai is to the west, Tokyo to the east, and Busan sits at a similar distance from both — the last port the two groups share. After Busan, our clients go on to Tokyo and theirs go on to China.</p></div>
+  </div>
+</article>
+
+<article class="story feature" id="tokyo" style="--accent:#8FB8DC" data-folio="P·06">
+  <header class="story-head">
+    <p class="kicker">TOKYO · HOSTED BY MICHIO AYUMU</p>
+    <h2>Five days in Tokyo</h2>
+    <p class="dateline">Keio Plaza Hotel · Shinjuku</p>
+  </header>
+  <div class="row top">
+    <figure class="photo"><img data-src="shinjuku.jpg" alt="Shinjuku, Tokyo" loading="lazy"><figcaption>Shinjuku</figcaption></figure>
+  </div>
+  <div class="row bottom">
+    <div class="stat"><b>Day 1</b><span>Shinjuku · check-in + free Metropolitan Government observatory</span></div>
+    <div class="stat"><b>Day 2</b><span>Akihabara — Huaqiangbei's mirror — + Miraikan</span></div>
+    <div class="stat"><b>Day 3</b><span>teamLab Borderless + Odaiba's life-size Gundam</span></div>
+    <div class="stat"><b>Day 4</b><span>Meiji Jingu, Harajuku, Shibuya Sky at sunset</span></div>
+  </div>
+  <div class="row two">
+    <figure class="media"><video data-src="toquio.mp4" data-fallback="akihabara.jpg" muted loop playsinline preload="metadata"></video><figcaption>toquio.mp4</figcaption></figure>
+    <div class="col rule-l">
+      <p class="lead">Welcomed in Japan by an agency that works at home — not a tour bought blind in a city nobody knows.</p>
+      <ul class="items compact"><li><b>Keio Plaza Hotel ★★★★</b><span>4 nights, triple room · paid by Michio Ayumu</span><em>US$ 127 <i>per person / night</i></em></li></ul>
+      <p class="small">Included: hotel, meals for 5 days, 72-hour metro pass, Miraikan, teamLab Borderless, Shibuya Sky, transfers and the flight home.</p>
+    </div>
+  </div>
+  <div class="row strip reveal"><figure class="shot"><img data-src="teamlab_blue.jpg" alt="teamLab Borderless" loading="lazy"><figcaption>teamLab Borderless</figcaption></figure><figure class="shot"><img data-src="shibuya_deck.jpg" alt="Shibuya Sky" loading="lazy"><figcaption>Shibuya Sky</figcaption></figure></div>
+</article>
+
+<article class="story a" id="sponsor" data-folio="P·07">
+  <header class="story-head">
+    <p class="kicker">THE SPONSOR</p>
+    <h2>Why Qualcomm says yes</h2>
+    <p class="dateline">real prices, researched by us</p>
+  </header>
+  <div class="row top">
+    <figure class="media"><video data-src="patrocinador.mp4" data-fallback="computex_hall.jpg" muted loop playsinline preload="metadata"></video><figcaption>patrocinador.mp4</figcaption></figure>
+    <div class="col rule-l">
+      
+      <p class="lead">Qualcomm's CEO, Cristiano Amon, is Brazilian — born in Campinas in 1970, an electrical engineering graduate from Unicamp in 1992.</p>
+      <p>The company gets 28 days with 40 Brazilian technology students: exactly the audience it wants to reach early. That is the only argument — every price that follows is real.</p>
+    </div>
+  </div>
+</article>
+
+<section class="divider" id="alliance">
+  <p class="kicker">THE ALLIANCE</p>
+  <div class="partners">
+    <figure class="shot alliance-logo"><img data-src="alianca_logo.png" alt="Michio Ayumu × CyberTravelling × Qualcomm" loading="lazy"></figure>
+  </div>
+  <p>Michio Ayumu welcomes our clients in Tokyo, we welcome theirs in Shanghai, and Qualcomm sponsors the second leg.</p>
+</section>
+
+<section class="story" id="flyer" data-folio="P·08">
+  <header class="story-head">
+    <p class="kicker">THE PARTNERSHIP FLYER</p>
+    <h2>What each partner delivers</h2>
+    <p class="dateline">per client</p>
+  </header>
+  <figure class="shot flyer-img"><img data-src="panfleto.jpg" alt="The partnership flyer" loading="lazy"><figcaption>The printed partnership flyer</figcaption></figure>
+  <div class="offer3">
+    <div class="plan"><p class="kicker">MICHIO AYUMU → OUR PREMIUM CLIENTS</p><h3>5 days in Tokyo</h3><p>Keio Plaza (4 nights, triple room), meals, 72 h metro pass, Miraikan, teamLab Borderless, Shibuya Sky, transfers and the flight home.</p><p class="price">US$ 1,477<small>per client</small></p></div>
+    <div class="plan"><p class="kicker">CYBERTRAVELLING → MICHIO'S CLIENTS</p><h3>5 days in Shanghai</h3><p>Conrad (4 nights, triple room), meals, Shanghai Auto Museum, Maglev, transfers and the flight home from China.</p><p class="price">US$ 1,391<small>per client</small></p></div>
+    <div class="plan hi"><p class="kicker">QUALCOMM → PREMIUM CLIENTS</p><h3>Paddock, Taipei &amp; cruise</h3><p>Champions Club, Taipei 101 + Taiwan visa + K-ETA, flight to Taipei, 4 nights with meals, 7-night cruise with mandatory tips.</p><p class="price">US$ 7,454<small>per client</small></p></div>
+  </div>
+</section>
+
+</div>
+
+<!-- ================= CAREERS ================= -->
+<section class="story careers" id="careers" style="--accent:#35E7FF" data-folio="16">
+  <header class="story-head">
+    <p class="kicker">WORK WITH US</p>
+    <h2>Careers</h2>
+    <p class="dateline">São Paulo · on the road</p>
+  </header>
+  <div class="row two reveal">
+    <div class="col">
+      <p class="lead">We are a small team that travels a lot. If you speak more than one language, like technology and don't panic at a border crossing, we want to meet you.</p>
+      <ul class="jobs">
+        <li><b>Bilingual tour guide</b><span>Portuguese + Mandarin · 28 days on the road with the group</span></li>
+        <li><b>Travel consultant</b><span>São Paulo office · packages, payment plans, documents</span></li>
+        <li><b>Motorsport hospitality coordinator</b><span>Grand Prix weekends · tickets, logistics, transfers</span></li>
+        <li><b>Content creator · tech &amp; travel</b><span>video and social media along the route</span></li>
+        <li><b>Internship</b><span>for technical-school students · tourism, design or IT</span></li>
+      </ul>
+      <p class="small">What we offer: travel to the routes we sell, language courses, flexible hours in the office.</p>
+    </div>
+    <form class="form demo-form" data-ok="Application simulated — nothing was sent or stored." autocomplete="off">
+      <h3>Apply now</h3>
+      <label>Full name<input type="text" required></label>
+      <label>Email<input type="email" required></label>
+      <label>Position
+        <select required><option value="">Choose…</option><option>Bilingual tour guide</option><option>Travel consultant</option><option>Motorsport hospitality coordinator</option><option>Content creator</option><option>Internship</option></select>
+      </label>
+      <label>Languages you speak<input type="text" placeholder="e.g. Portuguese, English, Mandarin"></label>
+      <label>Why CyberTravelling?<textarea rows="4"></textarea></label>
+      <button class="pill solid wide" type="submit">Send application</button>
+      <p class="form-note">Demo form: nothing is sent or saved.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ================= CONTACT + SOCIAL ================= -->
+<section class="story contact" id="contact" style="--accent:#FF4D9A" data-folio="17">
+  <header class="story-head">
+    <p class="kicker">GET IN TOUCH</p>
+    <h2>Contact us</h2>
+    <p class="dateline">Mon – Fri · 9 AM – 6 PM (BRT)</p>
+  </header>
+  <div class="row two reveal">
+    <div class="col">
+      <ul class="contact-list">
+        <li><span class="lbl">PHONE / WHATSAPP</span><b>+55 (11) 5555-0127</b></li>
+        <li><span class="lbl">EMAIL</span><b>contact@cybertravelling.com</b></li>
+        <li><span class="lbl">CAREERS</span><b>jobs@cybertravelling.com</b></li>
+        <li><span class="lbl">OFFICE</span><b>São Paulo · SP · Brazil</b></li>
+      </ul>
+      <h3 class="sub-h">Follow us</h3>
+      <ul class="social">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Instagram</span><b>@cybertravelling</b></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.5 2.5 2.5 4.5 5 5"/></svg><span>TikTok</span><b>@cybertravelling</b></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>YouTube</span><b>CyberTravelling</b></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2.5 2.5 0 0 1 5 0v4M12 10v7"/></svg><span>LinkedIn</span><b>CyberTravelling</b></li>
+      </ul>
+    </div>
+    <form class="form demo-form" data-ok="Message simulated — nothing was sent or stored." autocomplete="off">
+      <h3>Send us a message</h3>
+      <label>Name<input type="text" required></label>
+      <label>Email<input type="email" required></label>
+      <label>Subject
+        <select><option>Packages &amp; prices</option><option>Documents &amp; visas</option><option>Payment plans</option><option>Other</option></select>
+      </label>
+      <label>Message<textarea rows="5" required></textarea></label>
+      <button class="pill solid wide" type="submit">Send message</button>
+      <p class="form-note">Demo form: nothing is sent or saved.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ================= CLOSING ================= -->
+<section class="divider closing after-buy" id="closing" hidden>
+  <p class="kicker">THANK YOU FOR TRAVELLING WITH US</p>
+  <h2>See you in Beijing</h2>
+  <div class="rule"></div>
+  <p>Departure: Friday, March 5, 2027 · São Paulo (GRU) · 8:59 PM</p>
+  <div class="cta"><a class="pill solid" href="#packages">Book your seat</a><a class="pill ghost" href="#home">Back to the top</a></div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="foot">
+    <div><h3>CYBERTRAVELLING</h3><ul><li>China Tech Tour · 2027</li><li>+55 (11) 5555-0127</li><li>contact@cybertravelling.com</li><li>Instagram · TikTok · YouTube · LinkedIn</li></ul></div>
+    <div><h3>TEAM</h3><ul><li>Julio Cesar</li><li>Samuel Brandt</li><li>Matheus Ulisses</li><li>Luan Tavares</li><li>Gustavo Oliveira de Novaes</li><li>Deividson Monteiro dos Santos</li></ul></div>
+    <div><h3>SITE</h3><ul><li><a href="#about">About us</a></li><li><a href="#mission">Mission &amp; values</a></li><li><a href="#what-to-bring">What to bring</a></li><li><a href="#promotions">Promotions</a></li><li><a href="#packages">Packages</a></li><li><a href="#careers">Careers</a></li><li><a href="#contact">Contact</a></li></ul></div>
+    <div><h3>PRICE SOURCES</h3><ul><li>Booking.com · Agoda</li><li>Trip.com · Google Hotels</li><li>KLM timetable</li><li>Researched in 2026 for a March 2027 trip · prices in US dollars · US$ 1 = R$ 5.744 (Brazil commercial rate, close of Nov 26, 2026)</li></ul></div>
+  </div>
+  <p class="credits">Academic project · ETEC English class · 2026. CyberTravelling and its partners are fictional; contact details are fictional. Products and prices are real.
+    <br />3D models: “V6 car engine with engine [MoreThem]”, Blendoriano, CC BY 4.0 (Sketchfab) · other models: author and license on Sketchfab · 360° sky: Poly Haven (CC0) · Engine sound: “Red Bull RB16B” mod for Assetto Corsa (author unknown), educational use.
+    · <button class="linkbtn" id="reset-demo">reset demo</button>
+    · <a class="linkbtn" id="mode-switch" href="?original">open original version (heavy models)</a></p>
+</footer>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="assets/script/main.js"></script>
+<script src="assets/script/store.js"></script>
+<script type="module" src="assets/script/viewer3d.js"></script>
+</body>
+</html>

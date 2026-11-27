@@ -63,10 +63,13 @@ export function createBoom({ scene, root, rel, viewer, tex }) {
   const tmp = new THREE.Matrix4(), q = new THREE.Quaternion(), p = new THREE.Vector3();
 
   // caixa de um objeto no espaço do modelo (rootRel = raiz → modelo)
+  // só conta o que aparece: com o motor aberto, as peças de fora ficam escondidas e longe,
+  // e entrariam na conta do tamanho (a explosão ficava forte demais e tudo sumia da tela)
   function boxOf(obj, toModel) {
     const box = new THREE.Box3(), v = new THREE.Vector3(), m = new THREE.Matrix4();
-    obj.traverse((o) => {
-      if (!o.isMesh || !o.visible) return;
+    if (!obj.visible) return box;
+    obj.traverseVisible((o) => {
+      if (!o.isMesh) return;
       m.multiplyMatrices(toModel, o.matrixWorld);
       const pos = o.geometry.attributes.position;
       const step = Math.max(1, Math.floor(pos.count / 500));

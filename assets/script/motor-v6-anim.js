@@ -11,7 +11,7 @@
 //  são tiradas da própria geometria do modelo quando ele carrega.
 // =====================================================================
 import { createEngineSound } from "./motor-som.js";
-import { createBoom } from "./motor-boom.js?v=20261127d";
+import { createBoom } from "./motor-boom.js?v=20261127e";
 import * as THREE from "three";
 import { AfterimagePass } from "three/addons/postprocessing/AfterimagePass.js";
 
@@ -382,6 +382,9 @@ export function setupMotorV6(scene, viewer) {
   // ---------- estado ----------
   let theta = 0, rpm = RPM_IDLE, revs = 0, time = 0, paused = false;
   let throttle = false, lastThrottle = false, limiter = 0, cutT = 0, overrun = 0, overrunT = 0, kick = 0;
+  // segurar o motor no limitador por muito tempo: ele explode sozinho
+  const LIMIT_BLOW = 5;      // segundos cortando giro até explodir
+  let limitHold = 0;
   const REVS_IDLE = 3.6; // a marcha lenta já gira bem na tela (antes era o ritmo dos 8 500 rpm)
   const revsOf = (r) => REVS_IDLE + ((r - RPM_IDLE) / (RPM_MAX - RPM_IDLE)) * (MAX_REVS - REVS_IDLE);
   let k = 0, kTarget = 0;          // 0 = fechado, 1 = aberto (anda até kTarget)
@@ -392,6 +395,16 @@ export function setupMotorV6(scene, viewer) {
   const D = new THREE.Matrix4(), S = new THREE.Matrix4();
   // "Explode (Real)": o motor explode de verdade e depois volta no tempo (motor-boom.js)
   const boom = createBoom({ scene, root, rel, viewer, tex });
+  let uiLock = null; // o painel registra aqui como travar/soltar os botões
+  function blowUp() {
+    if (boom.active || !basePos) return false;
+    throttle = false;
+    uiLock?.(true);
+    if (!boom.start(basePos)) { uiLock?.(false); return false; }
+    limitHold = 0;
+    sound?.setEnabled(false);
+    return true;
+  }
 
   // rastro de movimento: entra em rotação alta (só quando o visualizador tem pós-processamento)
   let trail = null, trailLevel = 0, vibFree = true, subMode = false;
@@ -493,6 +506,10 @@ export function setupMotorV6(scene, viewer) {
       if (cutT <= 0) { cutT = 0.055 + Math.random() * 0.05; sound?.cut(); if (Math.random() < 0.75) pop(1); }
     }
     limiter = Math.max(0, limiter - dt);
+    // tempo cortando giro: sobe enquanto o pé segura no limitador, desce rápido quando solta
+    if (throttle && limiter > 0) limitHold += dt;
+    else limitHold = Math.max(0, limitHold - dt * 2);
+    if (limitHold >= LIMIT_BLOW && blowUp()) return;
     // tirou o pé em giro alto: estalos do escapamento por um instante
     if (!throttle && rpm > 9500 && overrun <= 0 && lastThrottle) overrun = 0.5 + Math.random() * 0.4;
     lastThrottle = throttle;
@@ -667,16 +684,12 @@ export function setupMotorV6(scene, viewer) {
       <button type="button" class="boom-btn" data-a="boom">Explode (Real)</button>`;
     const btn = box.querySelector('[data-a="toggle"]');
     const boomBtn = box.querySelector('[data-a="boom"]');
-    const lock = (v) => { boomBtn.disabled = v; btn.disabled = v; gas.disabled = v; };
+    const lock = (v) => { boomBtn.disabled = v; btn.disabled = v; gas.disabled = v; if (v) press(false); };
+    uiLock = lock;
     boom.soundOn = () => soundOn;
     boom.onDone = () => { rpm = RPM_IDLE; lock(false); sound?.setEnabled(soundOn); };
-    boomBtn.addEventListener("click", () => {
-      if (boom.active || !basePos || camT < 1) return;
-      press(false);
-      if (!boom.start(basePos)) return;
-      lock(true);
-      sound?.setEnabled(false);
-    });
+    // funciona a qualquer momento, até no meio do abrir/fechar (antes o clique era ignorado ali)
+    boomBtn.addEventListener("click", () => blowUp());
     btn.addEventListener("click", () => {
       if (boom.active) return;
       const open = kTarget < 0.5;
@@ -705,7 +718,7 @@ export function setupMotorV6(scene, viewer) {
     addEventListener("keyup", (e) => { if (keyOk(e)) press(false); });
     addEventListener("blur", () => press(false));
 
-    const needle = box.querySelector(".needle"), out = box.querySelector(".rpm"), tacho = box.querySelector(".tacho");
+    const needle = box.querySelector(".needle"), out = box.querySelector(".rpm"), tacho = box.querySelector(".tacho"), lim = box.querySelector(".lim");
     let shown = -1, textT = 0;
     gauge = (dt) => {
       const a = ang(Math.max(0, rpm)) + 90; // a agulha desenhada aponta para cima (−90°)
@@ -713,6 +726,9 @@ export function setupMotorV6(scene, viewer) {
       textT -= dt;
       if (textT <= 0) { textT = 0.08; const r = Math.round(rpm / 50) * 50; if (r !== shown) { shown = r; out.textContent = r.toLocaleString("en-US"); } }
       tacho.classList.toggle("limit", limiter > 0);
+      // aviso antes de explodir sozinho
+      const hot = limitHold > LIMIT_BLOW * 0.5;
+      if (hot !== tacho.classList.contains("hot")) { tacho.classList.toggle("hot", hot); lim.textContent = hot ? "OVERHEAT!" : "REV LIMITER"; }
     };
     onPop = () => { tacho.classList.remove("pop"); void tacho.offsetWidth; tacho.classList.add("pop"); };
     panel.append(box);

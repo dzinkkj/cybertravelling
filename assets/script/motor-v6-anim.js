@@ -11,7 +11,7 @@
 //  são tiradas da própria geometria do modelo quando ele carrega.
 // =====================================================================
 import { createEngineSound } from "./motor-som.js";
-import { createBoom } from "./motor-boom.js?v=20261127f";
+import { createBoom } from "./motor-boom.js?v=20261127g";
 import * as THREE from "three";
 import { AfterimagePass } from "three/addons/postprocessing/AfterimagePass.js";
 

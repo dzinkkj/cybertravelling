@@ -5,11 +5,11 @@ Versão original (site-original): fotos exatamente como no .pptx e vídeos intac
 Para trocar uma foto ou vídeo, salve outro com o MESMO nome nesta pasta. Nada no código muda.
 
 VÍDEOS QUE JÁ EXISTEM (todos sem som, em loop):
-  capa.mp4 .............. ShangaiBanner · fundo da capa
-  xangai-banner.mp4 ..... ShangaiLogo (HD 1280x720) · o quadro grande do bloco de Xangai
-  cruzeiro.mp4 .......... tokyoVideo · "The crossing" (Premium)
-  cortina-alianca.mp4 ... o nascer da logo (toca uma vez)
-  premium-intro.mp4 ..... transição depois de comprar o Premium (MSC World Asia, SEM o trecho de
+  01-capa-bund-xangai.mp4 .............. ShangaiBanner · fundo da capa
+  05-xangai-logo-noite.mp4 ..... ShangaiLogo (HD 1280x720) · o quadro grande do bloco de Xangai
+  18-premium-cruzeiro-toquio.mp4 .......... tokyoVideo · "The crossing" (Premium)
+  19-parceria-cortina-logo.mp4 ... o nascer da logo (toca uma vez)
+  15-premium-abertura.mp4 ..... transição depois de comprar o Premium (MSC World Asia, SEM o trecho de
                           14,63 s a 25,97 s; emenda com dissolve linear de 0,3 s, entra e sai do preto,
                           18,4 s, sem som)
 
@@ -24,14 +24,38 @@ LOGOS:
   alianca_logo.png ...... as três marcas (bloco "The alliance")
 
 VÍDEOS QUE AINDA NÃO EXISTEM (enquanto não existirem, aparece a foto entre parênteses):
-  voo.mp4 (map.png) · pequim.mp4 (forbidden) · xangai.mp4 (nanjing_road)
-  f1.mp4 (circuit_stand) · zhangjiajie.mp4 (zjj_b) · guangzhou.mp4 (white_tiger)
-  shenzhen.mp4 (huaqiangbei_a) · hong-kong.mp4 (symphony) · macau.mp4 (guia) · sanya.mp4 (sanya_resort)
-  plano-casual.mp4 (wall_wide) · plano-intermediario.mp4 (maglev)
-  Premium: patrocinador.mp4 (computex_hall) · paddock.mp4 (pitwalk) · taipe.mp4 (taipei_hotel)
-           toquio.mp4 (akihabara)
+  02-voo-rota.mp4 (map.png) · 03-pequim-cidade-proibida.mp4 (forbidden) · 04-xangai-nanjing-road.mp4 (nanjing_road)
+  06-gp-china-circuito.mp4 (circuit_stand) · 07-zhangjiajie-montanhas.mp4 (zjj_b) · 08-guangzhou-safari.mp4 (white_tiger)
+  09-shenzhen-eletronicos.mp4 (huaqiangbei_a) · 10-hong-kong-symphony.mp4 (symphony) · 11-macau-guia.mp4 (guia) · 12-sanya-praia.mp4 (sanya_resort)
+  13-pacote-casual.mp4 (wall_wide) · 14-pacote-intermediario.mp4 (maglev)
+  Premium: 21-parceria-patrocinador.mp4 (computex_hall) · 16-premium-paddock-club.mp4 (pitwalk) · 17-premium-taipei.mp4 (taipei_hotel)
+           20-parceria-toquio-akihabara.mp4 (akihabara)
 
 FORA DO SITE DE PROPÓSITO:
   bund.jpg ........ a foto dos slides tem marca d'água da Adobe Stock
   alianca_hero.jpg  logo sobre o planeta (removida a pedido)
   amon.jpg ........ foto de pessoa real; se quiserem usar, ponham vocês mesmos
+
+VERSÕES VERTICAIS (celular em pé, até 700px de largura):
+  Salve nesta pasta com o nome abaixo. Se o arquivo não existir, o site usa o vídeo normal.
+  01-capa-bund-xangai-vertical.mp4
+  02-voo-rota-vertical.mp4
+  03-pequim-cidade-proibida-vertical.mp4
+  04-xangai-nanjing-road-vertical.mp4
+  05-xangai-logo-noite-vertical.mp4
+  06-gp-china-circuito-vertical.mp4
+  07-zhangjiajie-montanhas-vertical.mp4
+  08-guangzhou-safari-vertical.mp4
+  09-shenzhen-eletronicos-vertical.mp4
+  10-hong-kong-symphony-vertical.mp4
+  11-macau-guia-vertical.mp4
+  12-sanya-praia-vertical.mp4
+  13-pacote-casual-vertical.mp4
+  14-pacote-intermediario-vertical.mp4
+  15-premium-abertura-vertical.mp4
+  16-premium-paddock-club-vertical.mp4
+  17-premium-taipei-vertical.mp4
+  18-premium-cruzeiro-toquio-vertical.mp4
+  19-parceria-cortina-logo-vertical.mp4
+  20-parceria-toquio-akihabara-vertical.mp4
+  21-parceria-patrocinador-vertical.mp4

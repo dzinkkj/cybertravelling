@@ -2,3 +2,6 @@
 assets/models/original/
 assets/hdri/original/
 assets/audio/original/
+
+# configuração local do Claude
+.claude/

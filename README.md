@@ -16,3 +16,8 @@ Rodar no PC: abra a pasta no VS Code e use a extensão Live Server
 ## Mídia
 Fotos e vídeos ficam em `assets/media/`. Vídeo que não existir mostra a foto de reserva
 (`data-fallback`) no lugar. `capa.mp4` (4,8 MB) não veio neste zip: copie o seu para `assets/media/`.
+
+## Vídeos verticais (celular)
+Abaixo de 700px de largura, o site procura a versão vertical de cada vídeo com o sufixo
+`-vertical` (ex.: `capa-vertical.mp4` ao lado de `capa.mp4`). Se ela não existir, usa a normal.
+O quadro de cada foto ou vídeo segue a proporção do próprio arquivo.

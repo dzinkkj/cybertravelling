@@ -148,8 +148,9 @@ class Viewer {
     c.autoRotate = !reduceMotion && this.el.dataset.rotate !== "0";
     c.autoRotateSpeed = 1.2;
     let idle;
-    c.addEventListener("start", () => { c.autoRotate = false; clearTimeout(idle); });
+    c.addEventListener("start", () => { c.autoRotate = false; clearTimeout(idle); this.dragging = true; });
     c.addEventListener("end", () => {
+      this.dragging = false; // o giro próprio (data-spin) volta quando o dedo/mouse solta
       if (reduceMotion || this.el.dataset.rotate === "0") return;
       idle = setTimeout(() => (c.autoRotate = true), 3000);
     });
@@ -404,7 +405,7 @@ class Viewer {
         this.subStep = (fdt * shutter) / this.subN;
         this.custom.update(fdt - this.subStep * (this.subN - 1));
       } else this.custom?.update(dt);
-      if (this.spinner) this.spinner.rotation.y += dt * Number(this.el.dataset.spin);
+      if (this.spinner && !this.dragging) this.spinner.rotation.y += dt * Number(this.el.dataset.spin);
       this.controls.update();
       if (this.composer) this.composer.render(dt);
       else this.renderer.render(this.scene, this.camera);

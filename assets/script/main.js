@@ -51,25 +51,60 @@
   const MEDIA = (qMedia && /^https:\/\//.test(qMedia) ? qMedia.replace(/\/?$/, "/") : null)
     || document.documentElement.dataset.media || "assets/media/";
   const mediaUrl = (f) => (/^(https?:)?\/\//.test(f) ? f : MEDIA + f);
-  document.querySelectorAll("video[data-src]").forEach((v) => {
+
+  // o quadro (.frame) copia a proporção do arquivo: nada fica cortado nem esticado
+  const setRatio = (el, w, h) => {
+    if (!w || !h) return;
+    const orient = w >= h ? "h" : "v";
+    const frame = el.closest(".frame");
+    if (frame) frame.style.setProperty("--ar", (w / h).toFixed(4));
+    el.closest("figure")?.setAttribute("data-orient", orient);
+    el.dataset.orient = orient;
+  };
+
+  // celular em pé (até 700px): usa "nome-vertical.mp4" se existir; se não existir, volta ao normal
+  const NARROW = matchMedia("(max-width: 700px)");
+  const vertical = (f) => f.replace(/(\.\w+)$/, "-vertical$1");
+  const noVertical = new Set();
+  const pickSource = (v) => {
+    const vert = vertical(v.dataset.src);
+    const useV = NARROW.matches && !noVertical.has(vert);
+    const url = mediaUrl(useV ? vert : v.dataset.src);
+    if (v.dataset.url === url) return;
+    const wasPlaying = !v.paused;
+    v.dataset.url = url;
+    v.dataset.isVertical = useV ? "1" : "";
+    v.src = url;
+    if (wasPlaying) v.play().catch(() => {});
+  };
+  const videos = [...document.querySelectorAll("video[data-src]")];
+  videos.forEach((v) => {
     if (v.dataset.fallback) v.poster = mediaUrl(v.dataset.fallback); // photo shows while the video loads
     v.muted = true;
-    v.src = mediaUrl(v.dataset.src);
+    v.addEventListener("loadedmetadata", () => setRatio(v, v.videoWidth, v.videoHeight));
+    v.addEventListener("error", (e) => {
+      if (!v.dataset.isVertical) return;      // o normal também falhou: segue para a foto de reserva
+      noVertical.add(vertical(v.dataset.src)); // não há versão vertical: usa a normal
+      e.stopImmediatePropagation();
+      pickSource(v);
+    });
+    pickSource(v);
   });
+  NARROW.addEventListener("change", () => videos.forEach(pickSource));
 
   // fotos (no lugar dos modelos que não foram encontrados): mesmo endereço dos vídeos
   document.querySelectorAll(".photo img[data-src]").forEach((img) => {
     const fig = img.closest(".photo");
     fig.dataset.file = img.dataset.src;
     fig.classList.add("missing");
-    img.addEventListener("load", () => fig.classList.remove("missing"));
+    img.addEventListener("load", () => { fig.classList.remove("missing"); setRatio(img, img.naturalWidth, img.naturalHeight); });
     img.addEventListener("error", () => fig.classList.add("missing"));
     img.src = mediaUrl(img.dataset.src);
   });
 
   // photo strips, logos: same address as the videos; hide a shot if its file is missing
   document.querySelectorAll(".shot img[data-src], .michio-logo img[data-src], img.logo-img[data-src]").forEach((img) => {
-    img.addEventListener("load", () => img.closest(".brand")?.classList.add("has-logo"));
+    img.addEventListener("load", () => { img.closest(".brand")?.classList.add("has-logo"); setRatio(img, img.naturalWidth, img.naturalHeight); });
     img.addEventListener("error", () => { const f = img.closest(".shot"); if (f) f.hidden = true; });
     img.src = mediaUrl(img.dataset.src);
   });
@@ -80,9 +115,9 @@
     const img = new Image();
     img.className = "fb";
     img.alt = "";
-    img.addEventListener("load", () => { fig.classList.remove("missing"); fig.classList.add("has-fb"); });
+    img.addEventListener("load", () => { fig.classList.remove("missing"); fig.classList.add("has-fb"); setRatio(img, img.naturalWidth, img.naturalHeight); });
     img.src = mediaUrl(v.dataset.fallback);
-    fig.append(img);
+    (fig.querySelector(".frame") || fig).append(img);
   };
 
   document.querySelectorAll(".media").forEach((fig) => {
@@ -91,7 +126,11 @@
     fig.dataset.file = v.dataset.src || "no file";
     fig.classList.add("missing");
     v.muted = true; // autoplay só funciona sem som
-    v.addEventListener("loadeddata", () => fig.classList.remove("missing"));
+    v.addEventListener("loadeddata", () => {
+      fig.classList.remove("missing", "has-fb");
+      fig.querySelector("img.fb")?.remove();
+      setRatio(v, v.videoWidth, v.videoHeight);
+    });
     v.addEventListener("error", () => { fig.classList.add("missing"); useFallback(fig, v); });
     videoIO.observe(v);
   });

@@ -81,7 +81,8 @@ h1,h2,h3{font-family:var(--disp);font-weight:700;line-height:1.05;margin:0;text-
 /* ---------- capa ---------- */
 .hero{position:relative;min-height:calc(100svh - var(--hh));display:grid;align-items:end;overflow:hidden;
   border-bottom:1px solid var(--line)}
-.hero .media{position:absolute;inset:0;border:0;border-radius:0;aspect-ratio:auto}
+.hero .media{position:absolute;inset:0}
+.hero .media .frame{position:absolute;inset:0;width:auto;aspect-ratio:auto;border:0;border-radius:0}
 .hero .media::after{content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(7,10,18,.2) 0%,rgba(7,10,18,.55) 55%,var(--bg) 100%)}
 .hero-copy{position:relative;z-index:2;padding:0 max(5vw,16px) clamp(32px,6vw,72px);max-width:900px}
@@ -117,7 +118,6 @@ h1,h2,h3{font-family:var(--disp);font-weight:700;line-height:1.05;margin:0;text-
 .b .top{grid-template-columns:minmax(0,1fr) minmax(0,1.65fr)}
 .b .bottom{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
 .c .top{grid-template-columns:minmax(0,1fr)}
-.c .top .media{aspect-ratio:21/9}
 .c .bottom{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) minmax(0,1fr)}
 .feature .viewer{min-height:min(72vh,620px)}
 .feature .bottom{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -130,30 +130,27 @@ p.lead:not(.ph)::first-letter{color:var(--accent);font:700 3.1em/.8 var(--disp);
 .bars i:nth-child(3n){width:72%}.bars i:nth-child(4n){width:88%}
 h3{font-size:20px}
 
-/* vídeo */
-.media{position:relative;margin:0;border-radius:10px;overflow:hidden;background:var(--card);
-  border:1px solid var(--line);aspect-ratio:16/9}
-.media video{width:100%;height:100%;object-fit:cover}
-.media figcaption{position:absolute;left:12px;bottom:10px;z-index:2;font:12px var(--mono);color:var(--mu);
-  background:rgba(7,10,18,.7);padding:4px 8px;border-radius:5px}
+/* ---------- mídia (vídeo e foto) ----------
+   figure  = coluna: quadro em cima, legenda embaixo (fora da imagem)
+   .frame  = o quadro; a proporção vem do próprio arquivo (--ar, posto pelo main.js)
+   --max-h = altura máxima: um vídeo vertical encolhe na largura em vez de crescer demais */
+.media,.photo,.shot{position:relative;margin:0;display:flex;flex-direction:column;gap:8px;align-self:start;width:100%}
+.frame{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:4px;
+  aspect-ratio:var(--ar,1.7778);width:min(100%,calc(var(--max-h,80svh) * var(--ar,1.7778)));margin-inline:auto}
+.frame > video,.frame > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+figure > figcaption{align-self:flex-start;font:12px var(--mono);color:var(--mu);
+  padding:3px 8px;border-left:2px solid var(--accent);background:var(--card)}
 .media.missing video{opacity:0}
-.media.missing::before{content:"▶  video: " attr(data-file);position:absolute;inset:0;display:grid;place-items:center;
+.media.missing .frame::before{content:"▶  video: " attr(data-file);position:absolute;inset:0;display:grid;place-items:center;
   font:13px var(--mono);color:var(--dim);
   background:repeating-linear-gradient(135deg,var(--card) 0 14px,var(--card2) 14px 28px)}
-
-/* foto (no lugar de um modelo 3D) */
-.photo{position:relative;margin:0;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--card);min-height:380px}
-.photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.photo figcaption{position:absolute;left:12px;bottom:10px;z-index:2;font:12px var(--mono);color:var(--tx);
-  background:rgba(7,10,18,.7);padding:4px 8px;border-radius:5px}
 .photo.missing img{opacity:0}
-.photo.missing::before{content:"photo: " attr(data-file);position:absolute;inset:0;display:grid;place-items:center;
+.photo.missing .frame::before{content:"photo: " attr(data-file);position:absolute;inset:0;display:grid;place-items:center;
   font:13px var(--mono);color:var(--dim);background:repeating-linear-gradient(135deg,var(--card) 0 14px,var(--card2) 14px 28px)}
-.feature .photo{min-height:min(72vh,620px)}
 
 /* visualizador 3D */
 .viewer{position:relative;min-height:380px;border-radius:10px;overflow:hidden;border:1px solid var(--line);
-  background:radial-gradient(120% 90% at 50% 20%,#1B2440 0%,#0B0F1C 70%);cursor:grab;touch-action:pan-y}
+  background:radial-gradient(120% 90% at 50% 20%,#1B2440 0%,#0B0F1C 70%);cursor:grab;touch-action:none}
 .viewer:active{cursor:grabbing}
 .viewer canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block}
 .viewer .tag{position:absolute;left:10px;top:8px;z-index:2;font:12px var(--mono);color:var(--accent);pointer-events:none;background:rgba(7,10,18,.72);padding:3px 8px;border-radius:5px}
@@ -230,8 +227,8 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
 .cart-note{font-size:13px;color:var(--dim);margin:0 0 16px}
 
 /* cards de plano (vitrine) */
-.plan .plan-img{margin:-24px -24px 6px;border-radius:10px 10px 0 0;overflow:hidden;aspect-ratio:16/10;position:relative}
-.plan .plan-img .media{border:0;border-radius:0;aspect-ratio:auto;height:100%}
+.plan .plan-img{margin:-24px -24px 6px;overflow:hidden;position:relative}
+.plan .plan-img .frame{border:0;border-radius:0}
 .plan .kicker{margin:0;font-size:12px}
 .plan .add{margin-top:auto}
 .feat{list-style:none;padding:0;margin:0 0 8px;display:grid;gap:8px}
@@ -266,7 +263,8 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
 .bigsum b{display:block;font:700 clamp(36px,6vw,64px)/1 var(--disp);color:var(--gd)}
 .bigsum span{font:12px var(--mono);color:var(--mu)}
 .curtain{background:#000;padding:0}
-.curtain .media{border:0;border-radius:0;aspect-ratio:16/9;max-height:100svh;margin:0 auto}
+.curtain .media .frame{border:0;border-radius:0;--max-h:100svh}
+.curtain figcaption{margin-left:max(5vw,16px)}
 #premium .logo-slot{align-self:flex-start}
 
 /* animação de tela cheia */
@@ -523,15 +521,15 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
 .brand .logo-img{display:none;height:46px;width:auto;margin-left:-8px}
 .brand.has-logo .logo-img{display:block}
 .brand.has-logo .logo-txt{display:none}
-.media img.fb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frame img.fb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .media.has-fb video{opacity:0}
 .media.has-fb figcaption{display:none}
 /* strips keep each photo's own proportions (never stretched or cut) */
 .row.strip{display:block;columns:4 200px;column-gap:12px}
-.shot{position:relative;margin:0 0 12px;break-inside:avoid;border-radius:4px;overflow:hidden;border:1px solid var(--line);background:var(--card)}
-.shot img{width:100%;height:auto;display:block}
-.shot figcaption{position:absolute;left:8px;bottom:8px;font:11px var(--mono);color:var(--tx);background:rgba(7,10,18,.78);padding:2px 7px;border-radius:3px}
-.alliance-logo{max-width:720px;margin:0 auto 24px;border:0;background:none}
+.shot{margin:0 0 12px;break-inside:avoid}
+.shot figcaption{font-size:11px}
+.alliance-logo{max-width:720px;margin:0 auto 24px}
+.alliance-logo .frame{border:0;background:none}
 .flyer-img{max-width:520px;margin:0 auto 28px}
 @media (max-width:600px){.row.strip{columns:2}}
 
@@ -539,7 +537,6 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
 .fx{margin:10px 0 0;font:12px var(--mono);color:var(--mu);letter-spacing:.02em}
 .fx b{color:var(--gd);font-weight:600}
 .head-fx{grid-column:1/-1;margin:2px 0 0}
-.media.banner{min-height:380px}
 .michio-logo{margin:0;display:grid;place-items:center;min-height:260px;padding:clamp(24px,5vw,56px);background:radial-gradient(ellipse at center,rgba(255,62,40,.10),transparent 70%),var(--card);border:1px solid var(--line);border-radius:10px}
 .michio-logo img{width:min(560px,100%);height:auto;display:block;filter:drop-shadow(0 6px 24px rgba(255,60,30,.25))}
 
@@ -556,3 +553,12 @@ footer a{color:var(--mu);text-decoration:none}footer a:hover{color:var(--tx)}
 .divider.closing{--accent:var(--cy);background:radial-gradient(ellipse at 50% 0%,rgba(53,231,255,.08),transparent 60%)}
 .divider.closing .cta{justify-content:center;margin-top:24px}
 @media (max-width:860px){.row.tech-credit,.folder-row,.folder-row:has(.wide:not([hidden])){grid-template-columns:minmax(0,1fr)}}
+
+/* ================= CELULAR EM PÉ: vídeos verticais =================
+   Abaixo de 700px, o main.js tenta "nome-vertical.mp4" (ex.: capa-vertical.mp4).
+   Sem a versão vertical, o vídeo deitado aparece inteiro em vez de cortado. */
+@media (max-width:700px){
+  .hero .media[data-orient="h"] .frame{inset:0 0 auto 0;aspect-ratio:var(--ar)}
+  .hero:has(.media[data-orient="h"]){min-height:auto;padding-top:calc(56.25vw + 16px)}
+  .intro video[data-orient="h"]{object-fit:contain}
+}

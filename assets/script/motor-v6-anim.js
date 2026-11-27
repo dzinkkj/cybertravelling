@@ -11,7 +11,7 @@
 //  são tiradas da própria geometria do modelo quando ele carrega.
 // =====================================================================
 import { createEngineSound } from "./motor-som.js";
-import { createBoom } from "./motor-boom.js?v=20261127e";
+import { createBoom } from "./motor-boom.js?v=20261127f";
 import * as THREE from "three";
 import { AfterimagePass } from "three/addons/postprocessing/AfterimagePass.js";
 
@@ -393,7 +393,7 @@ export function setupMotorV6(scene, viewer) {
   viewer.controls?.addEventListener("start", () => (dragging = true));
   viewer.controls?.addEventListener("end", () => (dragging = false));
   const D = new THREE.Matrix4(), S = new THREE.Matrix4();
-  // "Explode (Real)": o motor explode de verdade e depois volta no tempo (motor-boom.js)
+  // explosão de verdade (motor-boom.js): acontece quando o motor fica 5 s no limitador; depois volta no tempo
   const boom = createBoom({ scene, root, rel, viewer, tex });
   let uiLock = null; // o painel registra aqui como travar/soltar os botões
   function blowUp() {
@@ -680,16 +680,12 @@ export function setupMotorV6(scene, viewer) {
         <svg viewBox="0 0 64 80" aria-hidden="true"><path class="arm" d="M32 4v20"/><rect class="pad" x="10" y="22" width="44" height="54" rx="9"/><path class="grip" d="M18 34h28M18 44h28M18 54h28M18 64h28"/></svg>
         <span>Throttle<small>hold</small></span>
       </button>
-      <div class="row-btns"><button type="button" data-a="toggle">Explode</button><button type="button" data-a="sound" aria-pressed="true" title="Engine sound">🔊 Sound</button></div>
-      <button type="button" class="boom-btn" data-a="boom">Explode (Real)</button>`;
+      <div class="row-btns"><button type="button" data-a="toggle">Explode</button><button type="button" data-a="sound" aria-pressed="true" title="Engine sound">🔊 Sound</button></div>`;
     const btn = box.querySelector('[data-a="toggle"]');
-    const boomBtn = box.querySelector('[data-a="boom"]');
-    const lock = (v) => { boomBtn.disabled = v; btn.disabled = v; gas.disabled = v; if (v) press(false); };
+    const lock = (v) => { btn.disabled = v; gas.disabled = v; if (v) press(false); };
     uiLock = lock;
     boom.soundOn = () => soundOn;
     boom.onDone = () => { rpm = RPM_IDLE; lock(false); sound?.setEnabled(soundOn); };
-    // funciona a qualquer momento, até no meio do abrir/fechar (antes o clique era ignorado ali)
-    boomBtn.addEventListener("click", () => blowUp());
     btn.addEventListener("click", () => {
       if (boom.active) return;
       const open = kTarget < 0.5;

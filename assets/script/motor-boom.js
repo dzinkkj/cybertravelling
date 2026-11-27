@@ -1,6 +1,6 @@
 // =====================================================================
-//  motor-boom.js — botão "Explode (Real)": o motor V6 explode de verdade (meme)
-//    1. no clique, cada peça de cima do modelo vira um "estilhaço" com velocidade,
+//  motor-boom.js — o motor V6 explode de verdade (meme) quando fica 5 s no limitador
+//    1. na explosão, cada peça de cima do modelo vira um "estilhaço" com velocidade,
 //       giro e gravidade; a trajetória inteira é calculada na hora e guardada quadro a quadro
 //    2. bola de fogo, faíscas, fumaça, clarão e tremor (tudo em função do tempo t)
 //    3. no fim aparece "Rewind": o mesmo filme toca de trás para frente até o motor
